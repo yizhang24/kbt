@@ -25,23 +25,23 @@ public class StatusCommand extends Command{
     }
     public void HandleCommand(MessageReceivedEvent e, List<String> args){
         switch (args.get(0)){
-            case "online":
-                status.ChangeStatus(OnlineStatus.ONLINE);
-                break;
-            case "idle":
-                status.ChangeStatus(OnlineStatus.IDLE);
-                break;
-            case "dnd":
-            case "donotdisturb":
-                status.ChangeStatus(OnlineStatus.DO_NOT_DISTURB);
-                break;
-            case "invis":
-            case "invisible":
-                status.ChangeStatus(OnlineStatus.INVISIBLE);
-                break;
-            default:
-                System.out.println("No commnand recognized");
-                return;
+        case "online":
+            status.ChangeStatus(OnlineStatus.ONLINE);
+            break;
+        case "idle":
+            status.ChangeStatus(OnlineStatus.IDLE);
+            break;
+        case "dnd":
+        case "donotdisturb":
+            status.ChangeStatus(OnlineStatus.DO_NOT_DISTURB);
+            break;
+        case "invis":
+        case "invisible":
+            status.ChangeStatus(OnlineStatus.INVISIBLE);
+            break;
+        default:
+            System.out.println("No commnand recognized");
+            return;
         }
     }
 

@@ -1,6 +1,7 @@
 package kiwibot;
 
 import kiwibot.Commands.StatusCommand;
+import kiwibot.Music.MusicHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -14,14 +15,14 @@ import java.nio.file.Paths;
 public class Main {
     public static JDABuilder jda;
     public static JDA client;
-    public static String prefix = "!";
+    public static String prefix = "owo ";
     public static Path parentPath;
     public static StatusHelper statusHandler = new StatusHelper();
     public static CommandHelper commandHelper = new CommandHelper();
     public static void main(String[] args) throws IOException, LoginException {
 
         //Gets parent dir, where settings and the token are located
-        parentPath = Paths.get(System.getProperty("user.dir")).getParent();
+        parentPath = Paths.get(System.getProperty("user.dir"));
         prefix = "!";
 
         //Gets the Discord API token from token.txt
@@ -32,6 +33,7 @@ public class Main {
         jda = JDABuilder.createDefault(token);
 
         jda.addEventListeners(commandHelper.registerCommand(new StatusCommand(prefix)));
+        jda.addEventListeners(new MusicHandler());
 
         client = jda.build();
 

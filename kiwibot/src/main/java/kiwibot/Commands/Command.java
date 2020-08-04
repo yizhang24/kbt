@@ -17,7 +17,7 @@ public abstract class Command extends ListenerAdapter {
     public abstract boolean acceptingDMs();
     public String name;
     static String prefix;
-    static List<String> ignoredUsers = new ArrayList<>();
+    public static List<String> ignoredUsers = new ArrayList<>();
 
     public Command(String _prefix){
         SetName(this.getClass().getName());
@@ -30,6 +30,7 @@ public abstract class Command extends ListenerAdapter {
     }
     @Override
     public void onMessageReceived(MessageReceivedEvent e){
+        if(e.getMessage().getContentRaw().isEmpty()) return;
         if(!ContainsCommand(e.getMessage()) || !e.getMessage().getContentDisplay().startsWith(prefix)){
             return;
         }
@@ -48,7 +49,7 @@ public abstract class Command extends ListenerAdapter {
     }
 
     protected List<String> GetArgs(Message msg){
-        return GetArgs(msg.getContentDisplay());
+        return GetArgs(msg.getContentRaw());
     }
 
     protected List<String> GetArgs(String msg){
