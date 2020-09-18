@@ -4,11 +4,13 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class Command extends ListenerAdapter {
@@ -18,6 +20,7 @@ public abstract class Command extends ListenerAdapter {
     public String name;
     static String prefix;
     public static List<String> ignoredUsers = new ArrayList<>();
+    public static List<String> canceledUsers = new ArrayList<>();
 
     public Command(String _prefix){
         SetName(this.getClass().getName());
@@ -31,10 +34,17 @@ public abstract class Command extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent e){
         if(e.getMessage().getContentRaw().isEmpty()) return;
-        if(!ContainsCommand(e.getMessage()) || !e.getMessage().getContentDisplay().startsWith(prefix)){
+        if(e.getMessage().getAuthor().isBot()) return;
+        if(canceledUsers.contains(e.getAuthor().getId())  && !e.getMember().hasPermission(Permission.ADMINISTRATOR)){
+            System.out.println("Deleting Message");
+            e.getMessage().delete().queue();
+        }
+        if( !e.getMessage().getContentDisplay().startsWith(prefix) || !ContainsCommand(e.getMessage())){
             return;
         }
         if(ignoredUsers.contains(e.getAuthor().getId()) && !e.getMember().hasPermission(Permission.ADMINISTRATOR)){
+            System.out.println("Command.java: Ignored User");
+            DirectMessage(e.getAuthor(),"You've been ignored. Please feel free to leave your complaints in the nearest trash can.");
             return;
         }
         if(!e.isFromGuild() && !acceptingDMs()) {
@@ -45,6 +55,7 @@ public abstract class Command extends ListenerAdapter {
     }
 
     protected boolean ContainsCommand(Message msg){
+        if(getSubCommands() == null) return false;
         return getSubCommands().contains(GetArgs(msg).get(0));
     }
 
@@ -53,22 +64,22 @@ public abstract class Command extends ListenerAdapter {
     }
 
     protected List<String> GetArgs(String msg){
-        List<String> temp = Arrays.asList(msg.split(" ").clone());
+        List<String> temp = new LinkedList<>(Arrays.asList(msg.split(" ").clone()));
         if(prefix.contains(" ")) {
             temp.remove(0);
         }else{
             temp.set(0,temp.get(0).substring(prefix.length()));
         }
-        System.out.println(temp);
+        //System.out.println(temp);
         return temp;
     }
 
     protected void SendMessage(MessageChannel _channel, String e){
-        _channel.sendMessage(e);
+        _channel.sendMessage(e).queue();
     }
 
-    protected void DirectMessage(PrivateChannel _channel, String e){
-        _channel.sendMessage(e);
+    protected void DirectMessage(User user, String e){
+        user.openPrivateChannel().complete().sendMessage(e).queue();
     }
 
     protected void SetPrefix(String _prefix){
@@ -78,4 +89,25 @@ public abstract class Command extends ListenerAdapter {
     protected void SetName(String _name){
         name = _name;
     }
+
+    protected void AddUserToBlacklist(String _userID){
+        ignoredUsers.add(_userID);
+    }
+
+    protected void RemoveUserFromBlacklist(String _userID){
+        ignoredUsers.remove(_userID);
+    }
+
+    protected List<String> GetBlacklist(){return ignoredUsers;}
+
+
+    protected void AddUserToCancellistt(String _userID){
+        canceledUsers.add(_userID);
+    }
+
+    protected void RemoveUserFromCancellist(String _userID){
+        canceledUsers.remove(_userID);
+    }
+
+    protected List<String> GetCancelist(){return canceledUsers;}
 }

@@ -28,7 +28,7 @@ public class YoutubeSearchHandler {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static String apikey;
-    private Path tokenPath = Paths.get(System.getProperty("user.dir")+"/musicapikey.txt");
+    private Path tokenPath = Paths.get(Paths.get(System.getProperty("user.dir")).getParent()+"/musicapikey.txt");
 
     YoutubeSearchHandler() throws IOException {
         apikey = new String(Files.readAllBytes(tokenPath));
@@ -42,12 +42,14 @@ public class YoutubeSearchHandler {
     public static SearchResult Search(String query) {
         YouTube.Search.List search;
         try {
+            System.out.println(query);
             search = yt.search().list("snippet,id")
                     .setKey(apikey)
                     .setQ(query)
                     .setType("video")
-                    .setFields("items(id/videoId,snippet)")
-                    .setMaxResults(1L);
+                    .setMaxResults(1L)
+                    .setFields("items(id/videoId,snippet)");
+            System.out.println(search.execute());
             ArrayList res = (ArrayList) search.execute().get("items");
             if(res.size()==0) {
                return null;

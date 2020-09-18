@@ -26,9 +26,10 @@ import static kiwibot.Main.prefix;
 
 
 public class MusicHandler extends ListenerAdapter {
+    private final String[] broughtToYouBy = new String[]{"bronze Hanzo mains", "the fact that Ray can't get out of silver", "big chungus", "another Beyond Light delay", "the fact that Yi is a unique Gemini"};
     private final AudioPlayerManager playerManager;
     private final Map<Long,GuildMusicManager> musicManagerList;
-    private YoutubeSearchHandler searchHandler = new YoutubeSearchHandler();
+    private final YoutubeSearchHandler searchHandler = new YoutubeSearchHandler();
     public MusicHandler() throws IOException {
         this.musicManagerList = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
@@ -56,7 +57,8 @@ public class MusicHandler extends ListenerAdapter {
         if(ignoredUsers.contains(e.getAuthor().getId()) && !e.getMember().hasPermission(Permission.ADMINISTRATOR)){
             return;
         }
-        List<String> args = Arrays.asList(msg.getContentRaw().split(" ").clone());
+        List<String> args = new LinkedList<String>(Arrays.asList(msg.getContentRaw().split(" ").clone()));
+        System.out.println(args);
         if(prefix.contains(" ")) {
             args.remove(0);
         }else{
@@ -65,6 +67,7 @@ public class MusicHandler extends ListenerAdapter {
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.size(); i++) {
             sb.append(args.get(i));
+            sb.append(" ");
         }
         String query = sb.toString();
         switch(args.get(0)){
@@ -89,10 +92,11 @@ public class MusicHandler extends ListenerAdapter {
                 Stop(msg.getTextChannel());
                 break;
             case "seek":
-                query.trim();
+                query = query.trim();
+                System.out.println("Query = "  + query);
                 if(!query.matches("^[0-9:]+$")) {
-                    msg.getChannel().sendMessage("Please input time the the format HH:MM:SS");
-                    return;
+                    msg.getChannel().sendMessage("Please input time the the format HH:MM:SS").queue();
+                    //return;
                 }
                 long milliseconds = 0;
                 if(!query.contains(":")){
@@ -102,7 +106,7 @@ public class MusicHandler extends ListenerAdapter {
                     long minutes;
                     long seconds;
                     String[] values = query.split(":");
-                    System.out.println(values);
+                    System.out.println(Arrays.toString(values));
                     if(values.length == 2){
                         minutes = Long.parseLong(values[0]);
                         seconds = Long.parseLong(values[1]);
@@ -111,20 +115,22 @@ public class MusicHandler extends ListenerAdapter {
                         minutes = Long.parseLong(values[1]);
                         seconds = Long.parseLong(values[2]);
                     }else{
-                        msg.getChannel().sendMessage("da fuq is this time");
+                        msg.getChannel().sendMessage("da fuq is this time").queue();
                         return;
                     }
                     milliseconds = TimeUnit.SECONDS.toMillis(seconds);
                     milliseconds += TimeUnit.MINUTES.toMillis(minutes);
                     milliseconds += TimeUnit.HOURS.toMillis(hours);
                     Seek(milliseconds,msg.getTextChannel());
+                    break;  
                 }
             case "cut":
                 int i;
+                System.out.println(query);
                 try {
-                    i = Integer.parseInt(query.toString());
+                    i = Integer.parseInt(query);
                 }catch(Exception exception){
-                    msg.getChannel().sendMessage("Whoops, I didn't get an index number");
+                    msg.getChannel().sendMessage("Whoops, I didn't get an index number").queue();
                     break;
                 }
                 Cut(msg,i);
@@ -144,16 +150,16 @@ public class MusicHandler extends ListenerAdapter {
         }
 
         GuildMusicManager musicManager = getGuildManager(msg.getGuild()); //Music manager for the guild the request originated from.
-        String address; //Variable holding the address of the desired youtube video.
+        String address = null; //Variable holding the address of the desired youtube video.
         Message tempMsg = null; //The "loading" message
         String thumb = null; //Thumbnail of the desired youtube video.
 
         //Check if the user specified a specific youtube link
-        if(searchHandler.ValidateYTUrl(query)){
+        if(YoutubeSearchHandler.ValidateYTUrl(query)){
             System.out.println("Direct");
             RestAction<Message> ra = msg.getChannel().sendMessage("Fetching audio from YouTube URL...");
             tempMsg = ra.complete();
-            address = query;
+            address = query.trim();
         }else{ //If it is just a keyword
             SearchResult res = searchHandler.Search(query);
             if(res == null){
@@ -165,22 +171,33 @@ public class MusicHandler extends ListenerAdapter {
             System.out.println(thumb);
         }
         //Prints address to console
-        System.out.println(address);
+        System.out.println("Address = \"" + address + '"');
         //Deletes loading message
-        if(tempMsg != null) tempMsg.delete();
+        if(tempMsg != null) tempMsg.delete().queue();
         String finalThumb = thumb;
-        playerManager.loadItemOrdered(musicManager, address, new AudioLoadResultHandler() {
+        String finalAddress = address;
+        playerManager.loadItem(address, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) { //If user specified a track
                 AudioTrackInfo info = track.getInfo();
                 String duration = ConvertTime(track.getDuration());
                 EmbedBuilder eb = new EmbedBuilder()
-                        .setTitle("Track added to mixtape: "+ info.title)
                         .addField("Song author", info.author,true)
                         .addField("Song length", duration,true)
                         .addField("Requested By", msg.getAuthor().getName(),true)
-                        .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false)
-                        .setFooter("Brought to you by bronze hanzo mains");
+                        .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
+                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
+                System.out.println(broughtToYouBuyIndex);
+                try {
+                    eb.setFooter("Brought to you by " + broughtToYouBy[broughtToYouBuyIndex]);
+                }catch(ArrayIndexOutOfBoundsException e){
+                    eb.setFooter("Nick is gay");
+                }
+                if(!loop){
+                    eb.setTitle("Track added to mixtape: "+ info.title);
+                }else{
+                    eb.setTitle("Track looping: "+ info.title);
+                }
                 if(finalThumb != null) eb.setThumbnail(finalThumb);
                 msg.getChannel().sendMessage(eb.build()).queue();
                 Play(msg,musicManager,track, loop);
@@ -188,11 +205,33 @@ public class MusicHandler extends ListenerAdapter {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                msg.getChannel().sendMessage("That's a playlist link.  Please use a link from the video directly.");
+                AudioTrack track = playlist.getTracks().get(0);
+                AudioTrackInfo info = track.getInfo();
+                String duration = ConvertTime(track.getDuration());
+                EmbedBuilder eb = new EmbedBuilder()
+                        .addField("Song author", info.author,true)
+                        .addField("Song length", duration,true)
+                        .addField("Requested By", msg.getAuthor().getName(),true)
+                        .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
+                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
+                System.out.println(broughtToYouBuyIndex);
+                try {
+                    eb.setFooter("Brought to you by " + broughtToYouBy[broughtToYouBuyIndex]);
+                }catch(ArrayIndexOutOfBoundsException e){
+                    eb.setFooter("Nick is gay");
+                }
+                if(!loop){
+                    eb.setTitle("Track added to mixtape: "+ info.title);
+                }else{
+                    eb.setTitle("Track looping: "+ info.title);
+                }
+                if(finalThumb != null) eb.setThumbnail(finalThumb);
+                msg.getChannel().sendMessage(eb.build()).queue();
+                Play(msg,musicManager,track, loop);
             }
             @Override
             public void noMatches() { //If no matches were found
-                System.out.println(address);
+                    System.out.println(finalAddress);
                 msg.getChannel().sendMessage("No results found. Did you misspell something? (You probably did)").queue();
             }
 
