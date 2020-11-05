@@ -28,9 +28,10 @@ public class YoutubeSearchHandler {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static String apikey;
-    private Path tokenPath = Paths.get(Paths.get(System.getProperty("user.dir")).getParent()+"/musicapikey.txt");
+    private Path tokenPath = Paths.get(Paths.get(System.getProperty("user.dir"))+"/musicapikey.txt");
 
     YoutubeSearchHandler() throws IOException {
+        System.out.println("YoutubeSearchHandler.java: " + tokenPath);
         apikey = new String(Files.readAllBytes(tokenPath));
         yt = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
             @Override

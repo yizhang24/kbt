@@ -8,11 +8,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import kiwibot.Commands.MasterCommand;
+import kiwibot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.dv8tion.jda.api.requests.RestAction;
 
@@ -21,18 +21,28 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import static kiwibot.Commands.Command.ignoredUsers;
-import static kiwibot.Main.prefix;
 
 
-public class MusicHandler extends ListenerAdapter {
+public class MusicHandler extends MasterCommand {
     private final String[] broughtToYouBy = new String[]{"bronze Hanzo mains", "the fact that Ray can't get out of silver", "big chungus", "another Beyond Light delay", "the fact that Yi is a unique Gemini"};
     private final AudioPlayerManager playerManager;
     private final Map<Long,GuildMusicManager> musicManagerList;
     private final YoutubeSearchHandler searchHandler = new YoutubeSearchHandler();
+
     public MusicHandler() throws IOException {
+        this.name = "music";
         this.musicManagerList = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
+        this.commands.add("play");
+        this.commands.add("loop");
+        this.commands.add("np");
+        this.commands.add("nowplaying");
+        this.commands.add("skip");
+        this.commands.add("replay");
+        this.commands.add("rewind");
+        this.commands.add("stop");
+        this.commands.add("seek");
+        this.commands.add("cut");
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
     private synchronized GuildMusicManager getGuildManager(Guild guild){
@@ -47,29 +57,14 @@ public class MusicHandler extends ListenerAdapter {
 
         return guildManager;
     }
-    @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent e){
-        if(e.getAuthor().isBot() || ignoredUsers.contains(e.getAuthor().getId())) return;
-        Message msg = e.getMessage();
-        if(!e.getMessage().getContentDisplay().startsWith(prefix)){
-            return;
-        }
-        if(ignoredUsers.contains(e.getAuthor().getId()) && !e.getMember().hasPermission(Permission.ADMINISTRATOR)){
-            return;
-        }
-        List<String> args = new LinkedList<String>(Arrays.asList(msg.getContentRaw().split(" ").clone()));
-        System.out.println(args);
-        if(prefix.contains(" ")) {
-            args.remove(0);
-        }else{
-            args.set(0,args.get(0).substring(prefix.length()));
-        }
+    public void HandleCommand(MessageReceivedEvent e, List<String> args){
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.size(); i++) {
             sb.append(args.get(i));
             sb.append(" ");
         }
         String query = sb.toString();
+        Message msg = e.getMessage();
         switch(args.get(0)){
             case "play":
                 HandleRequest(msg,query,false);
@@ -122,7 +117,7 @@ public class MusicHandler extends ListenerAdapter {
                     milliseconds += TimeUnit.MINUTES.toMillis(minutes);
                     milliseconds += TimeUnit.HOURS.toMillis(hours);
                     Seek(milliseconds,msg.getTextChannel());
-                    break;  
+                    break;
                 }
             case "cut":
                 int i;
@@ -136,11 +131,9 @@ public class MusicHandler extends ListenerAdapter {
                 Cut(msg,i);
                 break;
             default:
-                return;
         }
 
     }
-
     public void HandleRequest(final Message msg, final String query, final boolean loop){
 
         //Check if user is currently in a voice channel
@@ -161,7 +154,7 @@ public class MusicHandler extends ListenerAdapter {
             tempMsg = ra.complete();
             address = query.trim();
         }else{ //If it is just a keyword
-            SearchResult res = searchHandler.Search(query);
+            SearchResult res = YoutubeSearchHandler.Search(query);
             if(res == null){
                 msg.getChannel().sendMessage("No results found.").queue();
                 return;
@@ -358,4 +351,6 @@ public class MusicHandler extends ListenerAdapter {
         }
         return(sb.toString());
     }
+
+
 }

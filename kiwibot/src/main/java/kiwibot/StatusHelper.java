@@ -2,7 +2,7 @@ package kiwibot;
 
 import net.dv8tion.jda.api.OnlineStatus;
 
-public class StatusHelper extends Main{
+public class StatusHelper extends Main {
 
     private static OnlineStatus status;
 

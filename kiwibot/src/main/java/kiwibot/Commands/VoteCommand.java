@@ -1,7 +1,7 @@
 package kiwibot.Commands;
+import kiwibot.CommandHandler;
 import kiwibot.StatusHelper;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -10,53 +10,48 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kiwibot.Main.prefix;
-
-public class VoteCommand extends Command{
+public class VoteCommand extends MasterCommand {
     private final String[] reactions = new String[] {"U+20E3",":one:",":two:",":three:",":four:",":five:",":six:",":seven:",":eight:",":nine:",":ten:"};
-    public static List<String> commands = new ArrayList<>();
     private StatusHelper status = new StatusHelper();
 
-    public VoteCommand(String _prefix) {
-        super(_prefix);
-        this.SetPrefix(_prefix);
+    public VoteCommand() {
+        this.name = "vote";
         commands.add("vote");
     }
-    public void HandleCommand(MessageReceivedEvent e, List<String> args){
+    public void HandleCommand(MessageReceivedEvent _e, List<String> _args){
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < args.size(); i++) {
-            sb.append(args.get(i));
+        for (int i = 1; i < _args.size(); i++) {
+            sb.append(_args.get(i));
             sb.append(" ");
         }
         String query = sb.toString();
-        switch (args.get(0)){
+        switch (_args.get(0)){
             case "vote":
-                createVote(query,e.getChannel());
+                createVote(query,_e.getChannel());
                 break;
             default:
-                System.out.println(args.get(0));
+                System.out.println(_args.get(0));
                 System.out.println("VOTE COMMAND: No command recognized");
                 return;
         }
     }
 
-    @Override
+
     public List<String> getSubCommands() {
         return commands;
     }
 
-    @Override
     public boolean acceptingDMs() {
         return false;
     }
-    void createVote(String query, MessageChannel channel){
-        String[] splitString = query.split("[?]+");
+    void createVote(String _query, MessageChannel _channel){
+        String[] splitString = _query.split("[?]+");
         StringBuilder question = new StringBuilder(splitString[0]);
         System.out.println("Question is: "+question);
         String[] options = splitString[1].substring(1).split(" ");
         if(options.length > 10){
-            channel.sendMessage("You fool! 10 options is way to many for a mortal mind to comprehend.").queue();
+            _channel.sendMessage("You fool! 10 options is way to many for a mortal mind to comprehend.").queue();
             return;
         }
         System.out.println("Options: "+ Arrays.toString(options));
@@ -66,7 +61,7 @@ public class VoteCommand extends Command{
         for(int i = 0; i < options.length; i++){
             eb.addField("Option " + (i+1) + ":",options[i],true);
         }
-        Message embed = channel.sendMessage(eb.build()).complete();
+        Message embed = _channel.sendMessage(eb.build()).complete();
         for(int i = 0; i < options.length; i++){
             String reactionUnicode = "U+003"+(i+1) + " U+FE0F U+20E3";
             System.out.println(reactionUnicode);

@@ -1,8 +1,7 @@
 package kiwibot.Commands;
 
+
 import kiwibot.Main;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -10,51 +9,40 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CancelCommand extends Command{
+public class CancelCommand extends MasterCommand{
 
-    public static List<String> commands = new ArrayList<>();
 
-    public CancelCommand(String _prefix) {
-        super(_prefix);
-        this.SetPrefix(_prefix);
+    public CancelCommand() {
+        this.name = "cancel";
         commands.add("cancel");
         commands.add("decancel");
         commands.add("cancellist");
     }
-    public void HandleCommand(MessageReceivedEvent e, List<String> args){
-        List<Member> userids = e.getMessage().getMentionedMembers();
-        switch (args.get(0)){
+    public void HandleCommand(MessageReceivedEvent _e, List<String> _args){
+        List<Member> userids = _e.getMessage().getMentionedMembers();
+        switch (_args.get(0)){
             case "cancel":
-                if(!e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
-                    e.getChannel().sendMessage("I can't do this, as I don't have the manage message permission.").queue();
+                if(!_e.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
+                    _e.getChannel().sendMessage("I can't do this, as I don't have the manage message permission.").queue();
                 }
                 for (Member member : userids) {
-                    AddUserToCancellistt(member.getId());
-                    SendMessage(e.getChannel(),"Canceled <@!" + member.getId() + ">");
+                    Main.commandHandler.addUserToCancellist(member.getId());
+                    Main.commandHandler.sendMessage(_e.getChannel(),"Canceled <@!" + member.getId() + ">");
                 }
                 break;
             case "decancel":
                 for (Member member : userids){
-                    if(ignoredUsers.contains(member.getId())) RemoveUserFromCancellist(member.getId());
-                    SendMessage(e.getChannel(),"DeCanceled <@!" + member.getId() + ">");
+                    if(Main.commandHandler.getCancellist().contains(member.getId())) Main.commandHandler.removeUserFromCancellist(member.getId());
+                    Main.commandHandler.sendMessage(_e.getChannel(),"DeCanceled <@!" + member.getId() + ">");
                 }
                 break;
             case "cancellist":
-                for(String userID : GetCancelist()){
-                    SendMessage(e.getChannel(),"<@!" + userID + ">");
+                for(String userID : Main.commandHandler.getCancellist()){
+                    Main.commandHandler.sendMessage(_e.getChannel(),"<@!" + userID + ">");
                 }
             default:
                 System.out.println("No command recognized");
         }
     }
 
-    @Override
-    public List<String> getSubCommands() {
-        return commands;
-    }
-
-    @Override
-    public boolean acceptingDMs() {
-        return false;
-    }
 }

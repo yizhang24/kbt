@@ -1,5 +1,6 @@
 package kiwibot.Commands;
 
+import kiwibot.CommandHandler;
 import kiwibot.StatusHelper;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -8,14 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StatusCommand extends Command{
+public class StatusCommand extends MasterCommand{
 
-    public static List<String> commands = new ArrayList<>();
     private StatusHelper status = new StatusHelper();
 
-    public StatusCommand(String _prefix) {
-        super(_prefix);
-        this.SetPrefix(_prefix);
+    public StatusCommand() {
+        this.name = "status";
         commands.add("online");
         commands.add("idle");
         commands.add("dnd");
@@ -23,8 +22,8 @@ public class StatusCommand extends Command{
         commands.add("invis");
         commands.add("invisible");
     }
-    public void HandleCommand(MessageReceivedEvent e, List<String> args){
-        switch (args.get(0)){
+    public void HandleCommand(MessageReceivedEvent _e, List<String> _args){
+        switch (_args.get(0)){
         case "online":
             status.ChangeStatus(OnlineStatus.ONLINE);
             break;
@@ -43,15 +42,5 @@ public class StatusCommand extends Command{
             System.out.println("No command recognized");
             return;
         }
-    }
-
-    @Override
-    public List<String> getSubCommands() {
-        return commands;
-    }
-
-    @Override
-    public boolean acceptingDMs() {
-        return false;
     }
 }

@@ -1,16 +1,21 @@
 package kiwibot;
 
-import kiwibot.Commands.Command;
+import kiwibot.Commands.MasterCommand;
 
 import java.util.TreeMap;
 
 public class CommandHelper {
-    private TreeMap<String, Command> commands;
+    private static TreeMap<String, MasterCommand> commands;
     public CommandHelper(){
-        commands = new TreeMap<String, Command>();
+        commands = new TreeMap<>();
     }
-    public Command registerCommand(Command _command){
+    public MasterCommand registerCommand(MasterCommand _command){
+        System.out.println(_command);
         commands.put(_command.name, _command);
         return _command;
+    }
+
+    public static TreeMap<String, MasterCommand> getSubcommandList(){
+        return commands;
     }
 }

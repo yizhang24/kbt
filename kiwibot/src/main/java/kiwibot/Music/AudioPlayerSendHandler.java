@@ -11,8 +11,8 @@ public class AudioPlayerSendHandler implements AudioSendHandler {
     private final AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
 
-    public AudioPlayerSendHandler(AudioPlayer audioPlayer){
-        this.audioPlayer = audioPlayer;
+    public AudioPlayerSendHandler(AudioPlayer _audioPlayer){
+        this.audioPlayer = _audioPlayer;
     }
 
     @Override

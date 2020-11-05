@@ -23,11 +23,11 @@ public class Main {
     public static Path parentPath;
     public static StatusHelper statusHandler = new StatusHelper();
     public static CommandHelper commandHelper = new CommandHelper();
+    public static CommandHandler commandHandler = new CommandHandler(prefix);
     public static void main(String[] args) throws IOException, LoginException {
 
         //Gets parent dir, where settings and the token are located
-        parentPath = Paths.get(System.getProperty("user.dir")).getParent();
-        prefix = "owo ";
+        parentPath = Paths.get(System.getProperty("user.dir"));
 
         //Gets the Discord API token from token.txt
         Path tokenPath = Paths.get(parentPath.toString(),"token.txt");
@@ -36,15 +36,20 @@ public class Main {
 
         jda = JDABuilder.createDefault(token);
 
-        jda.addEventListeners(commandHelper.registerCommand(new StatusCommand(prefix)));
-        jda.addEventListeners(commandHelper.registerCommand(new IgnoreCommand(prefix)));
-        jda.addEventListeners(commandHelper.registerCommand(new CancelCommand(prefix)));
-        jda.addEventListeners(commandHelper.registerCommand(new VoteCommand(prefix)));
-        jda.addEventListeners(new MusicHandler());
-        jda.setActivity(Activity.watching("Ray think that golden weed is funny. (It's not)"));
+
+        commandHelper.registerCommand(new StatusCommand());
+        commandHelper.registerCommand(new IgnoreCommand());
+        commandHelper.registerCommand(new CancelCommand());
+        commandHelper.registerCommand(new VoteCommand());
+        commandHelper.registerCommand(new MusicHandler());
+
+        jda.addEventListeners(commandHandler);
+
+        jda.setActivity(Activity.watching("Something"));
         client = jda.build();
 
     }
+
     public void ChangeStatus(OnlineStatus _status){
         client.getPresence().setPresence(_status,false);
     }
