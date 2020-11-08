@@ -1,9 +1,6 @@
 package kiwibot;
 
-import kiwibot.Commands.CancelCommand;
-import kiwibot.Commands.IgnoreCommand;
-import kiwibot.Commands.StatusCommand;
-import kiwibot.Commands.VoteCommand;
+import kiwibot.Commands.*;
 import kiwibot.Music.MusicHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -42,6 +39,7 @@ public class Main {
         commandHelper.registerCommand(new CancelCommand());
         commandHelper.registerCommand(new VoteCommand());
         commandHelper.registerCommand(new MusicHandler());
+        commandHelper.registerCommand(new RepeatCommand());
 
         jda.addEventListeners(commandHandler);
 
