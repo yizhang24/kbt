@@ -2,12 +2,11 @@ package kiwibot;
 
 import kiwibot.Commands.MasterCommand;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class CommandHandler extends ListenerAdapter {
@@ -26,17 +25,36 @@ public class CommandHandler extends ListenerAdapter {
     }
     @Override
     public void onMessageReceived(MessageReceivedEvent _e){
+        Member author = _e.getMember();
         System.out.println("wow message");
         if(_e.getMessage().getContentRaw().isEmpty()) return;
-        if(_e.getMessage().getAuthor().isBot()) return;
-        if(canceledUsers.contains(_e.getAuthor().getId())  && !_e.getMember().hasPermission(Permission.ADMINISTRATOR)){
+        if(author.getUser().isBot()) return;
+
+        Boolean isCringe = false;
+        List<Role> userRoles = author.getRoles();
+        for (Role role : userRoles){
+            if(role.getName().toLowerCase().contains("cringe")){
+                isCringe = true;
+                break;
+            }
+        }
+        if (isCringe){
+            System.out.println("cringe");
+            String[] cringe = new String []{"U+1F1E8","U+1F1F7","U+1F1EE","U+1F1F3","U+1F1EC","U+1F1EA"};
+            for (String letter:cringe) {
+                _e.getMessage().addReaction(letter).queue();
+            }
+        }
+
+
+        if(canceledUsers.contains(_e.getAuthor().getId())  && !Objects.requireNonNull(_e.getMember()).hasPermission(Permission.ADMINISTRATOR)){
             System.out.println("Deleting Message");
             _e.getMessage().delete().queue();
         }
         if( !_e.getMessage().getContentDisplay().startsWith(prefix)){
             return;
         }
-        if(ignoredUsers.contains(_e.getAuthor().getId()) && !_e.getMember().hasPermission(Permission.ADMINISTRATOR)){
+        if(ignoredUsers.contains(_e.getAuthor().getId()) && !Objects.requireNonNull(_e.getMember()).hasPermission(Permission.ADMINISTRATOR)){
             System.out.println("Command.java: Ignored User");
             directMessage(_e.getAuthor(),"You've been ignored. xdlmao");
             return;
@@ -92,6 +110,13 @@ public class CommandHandler extends ListenerAdapter {
         canceledUsers.remove(_userID);
     }
 
+    public void addRoleToBlacklist(String _userID){
+        ignoredUsers.add(_userID);
+    }
+
+    public void removeRoleFromBlacklist(String _userID){
+        ignoredUsers.remove(_userID);
+    }
     public List<String> getCancellist(){return canceledUsers;}
 
     protected List<String> GetArgs(String msg){
