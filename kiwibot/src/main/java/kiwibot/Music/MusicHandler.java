@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MusicHandler extends MasterCommand {
-    private final String[] broughtToYouBy = new String[]{"bronze Hanzo mains", "the fact that Ray can't get out of silver", "big chungus", "another Beyond Light delay", "the fact that Yi is a unique Gemini"};
+    private final String[] broughtToYouBy = new String[]{"Xander maining Tone", "haha epg go whoosh", "big chungus", "Ray's 1k voices", "the scp foundation","ur mom lamo", "the seventh seraph cqc 12"};
     private final AudioPlayerManager playerManager;
     private final Map<Long,GuildMusicManager> musicManagerList;
     private final YoutubeSearchHandler searchHandler = new YoutubeSearchHandler();
@@ -57,15 +57,15 @@ public class MusicHandler extends MasterCommand {
 
         return guildManager;
     }
-    public void HandleCommand(MessageReceivedEvent e, List<String> args){
+    public void HandleCommand(MessageReceivedEvent e, List<String> _args){
         StringBuilder sb = new StringBuilder();
-        for (int i = 1; i < args.size(); i++) {
-            sb.append(args.get(i));
+        for (int i = 1; i < _args.size(); i++) {
+            sb.append(_args.get(i));
             sb.append(" ");
         }
         String query = sb.toString();
         Message msg = e.getMessage();
-        switch(args.get(0)){
+        switch(_args.get(0)){
             case "play":
                 HandleRequest(msg,query,false);
                 break;

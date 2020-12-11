@@ -40,7 +40,14 @@ public class CommandHandler extends ListenerAdapter {
         }
         if (isCringe){
             System.out.println("cringe");
-            String[] cringe = new String []{"U+1F1E8","U+1F1F7","U+1F1EE","U+1F1F3","U+1F1EC","U+1F1EA"};
+            Random random = new Random();
+            int cringeorcrigen = random.nextInt(2);
+            String[] cringe;
+            if (cringeorcrigen < 1){
+                cringe = new String []{"U+1F1E8","U+1F1F7","U+1F1EE","U+1F1EC","U+1F1EA","U+1F1F3"};
+            }else{
+                cringe = new String []{"U+1F1E8","U+1F1F7","U+1F1EE","U+1F1F3","U+1F1EC","U+1F1EA"};
+            }
             for (String letter:cringe) {
                 _e.getMessage().addReaction(letter).queue();
             }

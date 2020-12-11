@@ -2,6 +2,7 @@ package kiwibot.Commands;
 
 import kiwibot.Main;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class IgnoreCommand extends MasterCommand {
     }
     public void HandleCommand(MessageReceivedEvent _e, List<String> _args){
         List<Member> userids = _e.getMessage().getMentionedMembers();
+        List<Role> roles = _e.getMessage().getMentionedRoles();
         switch (_args.get(0)){
             case "ignore":
                 for (Member member : userids) {
@@ -26,7 +28,7 @@ public class IgnoreCommand extends MasterCommand {
                 break;
             case "unignore":
                 for (Member member : userids){
-                    if(Main.commandHandler.getBlacklist().contains(member.getId())) Main.commandHandler.getBlacklist().remove(member.getId());
+                    if(Main.commandHandler.getBlacklist().contains(member.getId())) Main.commandHandler.removeUserFromBlacklist(member.getId());
                     Main.commandHandler.sendMessage(_e.getChannel(),"Unignored <@!" + member.getId() + ">");
                 }
                 break;

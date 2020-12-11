@@ -31,7 +31,7 @@ public class YoutubeSearchHandler {
     private Path tokenPath = Paths.get(Paths.get(System.getProperty("user.dir"))+"/musicapikey.txt");
 
     YoutubeSearchHandler() throws IOException {
-        System.out.println("YoutubeSearchHandler.java: " + tokenPath);
+        //System.out.println("YoutubeSearchHandler.java: " + tokenPath);
         apikey = new String(Files.readAllBytes(tokenPath));
         yt = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
             @Override
