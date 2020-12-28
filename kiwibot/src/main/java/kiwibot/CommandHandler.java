@@ -1,8 +1,10 @@
 package kiwibot;
 
 import kiwibot.Commands.MasterCommand;
+import kiwibot.Music.MusicHandler;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -81,7 +83,12 @@ public class CommandHandler extends ListenerAdapter {
         }
         System.out.println("exit");
     }
-
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+        if (event.getChannelLeft().equals(Main.musicHandler.getVC(event.getGuild())) && event.getChannelLeft().getMembers().size() == 1) {
+            Main.musicHandler.Stop(event.getGuild());
+        }
+    }
     public void sendMessage(MessageChannel channel, String contents){
         channel.sendMessage(contents).queue();
     }

@@ -21,6 +21,16 @@ public class Main {
     public static StatusHelper statusHandler = new StatusHelper();
     public static CommandHelper commandHelper = new CommandHelper();
     public static CommandHandler commandHandler = new CommandHandler(prefix);
+    public static MusicHandler musicHandler;
+
+    static {
+        try {
+            musicHandler = new MusicHandler();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) throws IOException, LoginException {
 
         //Gets parent dir, where settings and the token are located
@@ -38,7 +48,7 @@ public class Main {
         commandHelper.registerCommand(new IgnoreCommand());
         commandHelper.registerCommand(new CancelCommand());
         commandHelper.registerCommand(new VoteCommand());
-        commandHelper.registerCommand(new MusicHandler());
+        commandHelper.registerCommand(musicHandler);
         commandHelper.registerCommand(new RepeatCommand());
 
         jda.addEventListeners(commandHandler);

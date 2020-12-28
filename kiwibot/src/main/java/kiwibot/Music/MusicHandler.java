@@ -84,7 +84,7 @@ public class MusicHandler extends MasterCommand {
                 Replay(msg);
                 break;
             case "stop":
-                Stop(msg.getTextChannel());
+                Stop(msg.getGuild());
                 break;
             case "seek":
                 query = query.trim();
@@ -250,7 +250,7 @@ public class MusicHandler extends MasterCommand {
             channel.sendMessage("Current track cast into the shadow realm.  Now playing next track.").queue();
         }else{ //If no songs are left in queue
             System.out.println("No songs left");
-            Stop(channel);
+            Stop(channel.getGuild());
         }
     }
     //Replays the currently playing song, or plays the last playing song
@@ -269,9 +269,9 @@ public class MusicHandler extends MasterCommand {
         }
     }
     //Stops playback, and disconnects from the voice channel
-    public void Stop(TextChannel channel){
-        AudioManager localManager = channel.getGuild().getAudioManager();
-        GuildMusicManager guildManager = getGuildManager(channel.getGuild());
+    public void Stop(Guild guild){
+        AudioManager localManager = guild.getAudioManager();
+        GuildMusicManager guildManager = getGuildManager(guild);
         localManager.closeAudioConnection();
         guildManager.player.stopTrack();
         guildManager.scheduler.ClearQueue();
@@ -323,6 +323,15 @@ public class MusicHandler extends MasterCommand {
         if(!audioManager.isConnected() && !audioManager.isAttemptingToConnect()){
             VoiceChannel vs = msg.getMember().getVoiceState().getChannel();
             audioManager.openAudioConnection(vs);
+        }
+    }
+
+    public VoiceChannel getVC(Guild guild){
+        AudioManager audioManager = guild.getAudioManager();
+        if (!audioManager.isConnected()){
+            return null;
+        } else{
+            return audioManager.getConnectedChannel();
         }
     }
     //Converts time from milliseconds -> hh:mm:ss
