@@ -35,9 +35,9 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void ForcePlay(AudioTrack track, boolean _loop){
         loop = _loop;
-        player.startTrack(track, false);
         queue.clear();
         queueLength = 0;
+        System.out.println(player.startTrack(track, false));
     }
 
     public boolean NextTrack(){

@@ -55,6 +55,21 @@ public class CommandHandler extends ListenerAdapter {
             }
         }
 
+        Boolean isReptoid = false;
+        for (Role role : userRoles){
+            if(role.getName().toLowerCase().contains("reptoid")){
+                isReptoid = true;
+                break;
+            }
+        }
+        if (isReptoid && !isCringe){
+            System.out.println("reptoid");
+            String[] reptoid = new String []{"U+1F1F7","U+1F1EA","U+1F1F5","U+1F1F9","U+1F1F4","U+1F1EE","U+1F1E9"};
+            for (String letter:reptoid) {
+                _e.getMessage().addReaction(letter).queue();
+            }
+        }
+
 
         if(canceledUsers.contains(_e.getAuthor().getId())  && !Objects.requireNonNull(_e.getMember()).hasPermission(Permission.ADMINISTRATOR)){
             System.out.println("Deleting Message");

@@ -50,6 +50,7 @@ public class Main {
         commandHelper.registerCommand(new VoteCommand());
         commandHelper.registerCommand(musicHandler);
         commandHelper.registerCommand(new RepeatCommand());
+        commandHelper.registerCommand(new DefaultDance());
 
         jda.addEventListeners(commandHandler);
 

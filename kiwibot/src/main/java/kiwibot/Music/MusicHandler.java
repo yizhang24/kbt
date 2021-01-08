@@ -81,7 +81,7 @@ public class MusicHandler extends MasterCommand {
                 break;
             case "replay":
             case "rewind":
-                Replay(msg);
+                Replay(msg.getGuild(), msg.getTextChannel(), msg.getMember());
                 break;
             case "stop":
                 Stop(msg.getGuild());
@@ -135,14 +135,18 @@ public class MusicHandler extends MasterCommand {
 
     }
     public void HandleRequest(final Message msg, final String query, final boolean loop){
+        LoadTrack(msg.getGuild(), msg.getTextChannel(), msg.getMember(), query, loop, false);
+    }
 
+    public void LoadTrack(final Guild guild, final TextChannel channel, final Member author, final String query, final boolean loop, final boolean forceplay){
         //Check if user is currently in a voice channel
-        if(!msg.getMember().getVoiceState().inVoiceChannel()){
-            msg.getChannel().sendMessage("You have to be in a channel").queue();
+        System.out.println(author.getEffectiveName());
+        if(!author.getVoiceState().inVoiceChannel()){
+            channel.sendMessage("You have to be in a channel").queue();
             return;
         }
 
-        GuildMusicManager musicManager = getGuildManager(msg.getGuild()); //Music manager for the guild the request originated from.
+        GuildMusicManager musicManager = getGuildManager(guild); //Music manager for the guild the request originated from.
         String address = null; //Variable holding the address of the desired youtube video.
         Message tempMsg = null; //The "loading" message
         String thumb = null; //Thumbnail of the desired youtube video.
@@ -150,13 +154,13 @@ public class MusicHandler extends MasterCommand {
         //Check if the user specified a specific youtube link
         if(YoutubeSearchHandler.ValidateYTUrl(query)){
             System.out.println("Direct");
-            RestAction<Message> ra = msg.getChannel().sendMessage("Fetching audio from YouTube URL...");
+            RestAction<Message> ra = channel.sendMessage("Fetching audio from YouTube URL...");
             tempMsg = ra.complete();
             address = query.trim();
         }else{ //If it is just a keyword
             SearchResult res = YoutubeSearchHandler.Search(query);
             if(res == null){
-                msg.getChannel().sendMessage("No results found.").queue();
+                channel.sendMessage("No results found.").queue();
                 return;
             }
             address = res.getId().getVideoId();
@@ -177,7 +181,7 @@ public class MusicHandler extends MasterCommand {
                 EmbedBuilder eb = new EmbedBuilder()
                         .addField("Song author", info.author,true)
                         .addField("Song length", duration,true)
-                        .addField("Requested By", msg.getAuthor().getName(),true)
+                        .addField("Requested By", author.getEffectiveName(), true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
                 int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
                 System.out.println(broughtToYouBuyIndex);
@@ -192,8 +196,13 @@ public class MusicHandler extends MasterCommand {
                     eb.setTitle("Track looping: "+ info.title);
                 }
                 if(finalThumb != null) eb.setThumbnail(finalThumb);
-                msg.getChannel().sendMessage(eb.build()).queue();
-                Play(msg,musicManager,track, loop);
+                channel.sendMessage(eb.build()).queue();
+                if (forceplay) {
+                    ForcePlay(guild, author, musicManager, track, false);
+                }
+                else{
+                    Play(guild, author ,musicManager,track, loop);
+                }
             }
 
             @Override
@@ -204,7 +213,7 @@ public class MusicHandler extends MasterCommand {
                 EmbedBuilder eb = new EmbedBuilder()
                         .addField("Song author", info.author,true)
                         .addField("Song length", duration,true)
-                        .addField("Requested By", msg.getAuthor().getName(),true)
+                        .addField("Requested By", author.getEffectiveName(),true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
                 int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
                 System.out.println(broughtToYouBuyIndex);
@@ -219,28 +228,34 @@ public class MusicHandler extends MasterCommand {
                     eb.setTitle("Track looping: "+ info.title);
                 }
                 if(finalThumb != null) eb.setThumbnail(finalThumb);
-                msg.getChannel().sendMessage(eb.build()).queue();
-                Play(msg,musicManager,track, loop);
+                channel.sendMessage(eb.build()).queue();
+                if (forceplay) {
+                    ForcePlay(guild, author, musicManager, track, false);
+                }
+                else{
+                    Play(guild, author ,musicManager,track, loop);
+                }
             }
             @Override
             public void noMatches() { //If no matches were found
-                    System.out.println(finalAddress);
-                msg.getChannel().sendMessage("No results found. Did you misspell something? (You probably did)").queue();
+                System.out.println(finalAddress);
+                channel.sendMessage("No results found. Did you misspell something? (You probably did)").queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) { //Any other error
-                msg.getChannel().sendMessage("Error code: "+exception.getMessage()).queue();
+                channel.sendMessage("Error code: "+exception.getMessage()).queue();
             }
         });
     }
     //Plays song or adds song to queue if song is already playing
-    private void Play(Message msg, GuildMusicManager musicManager, AudioTrack track, boolean loop){
-        ConnectToVC(msg.getGuild().getAudioManager(),msg); //Connects to voice channel
+    private void Play(Guild guild, Member author, GuildMusicManager musicManager, AudioTrack track, boolean loop){
+        ConnectToVC(guild.getAudioManager(),author); //Connects to voice channel
         musicManager.scheduler.Queue(track, loop); //Adds track to queue
     }
     //Plays a song and forces it to front of the queue
-    private void ForcePlay(GuildMusicManager musicManager, AudioTrack track, boolean loop){
+    private void ForcePlay(Guild guild, Member author, GuildMusicManager musicManager, AudioTrack track, boolean loop){
+        ConnectToVC(guild.getAudioManager(),author);
         musicManager.scheduler.ForcePlay(track,loop);
     }
     //Skips current song and plays the next one in the queue.
@@ -254,18 +269,18 @@ public class MusicHandler extends MasterCommand {
         }
     }
     //Replays the currently playing song, or plays the last playing song
-    public void Replay(Message message){
-        ConnectToVC(message.getGuild().getAudioManager(),message);
-        TrackScheduler scheduler = getGuildManager(message.getGuild()).scheduler;
-        GuildMusicManager guildManager = getGuildManager(message.getGuild());
+    public void Replay(Guild guild, TextChannel channel, Member member){
+        ConnectToVC(guild.getAudioManager(),member);
+        TrackScheduler scheduler = getGuildManager(guild).scheduler;
+        GuildMusicManager guildManager = getGuildManager(guild);
         AudioTrack track = scheduler.player.getPlayingTrack();
         if(track == null) track = scheduler.lastTrack;
         System.out.println(track);
         if(track != null){
-            ForcePlay(guildManager,track.makeClone(),false);
-            message.getChannel().sendMessage("Repeating last track.  Now playing "+track.getInfo().title).queue();
+            ForcePlay(guild, member, guildManager,track.makeClone(),false);
+            channel.sendMessage("Repeating last track.  Now playing "+track.getInfo().title).queue();
         }else{
-            message.getChannel().sendMessage("No tracks have been played.").queue();
+            channel.sendMessage("No tracks have been played.").queue();
         }
     }
     //Stops playback, and disconnects from the voice channel
@@ -319,9 +334,9 @@ public class MusicHandler extends MasterCommand {
         return;
     }
     //Connects to voicechannel
-    private static void ConnectToVC(AudioManager audioManager, Message msg){
+    private static void ConnectToVC(AudioManager audioManager, Member target){
         if(!audioManager.isConnected() && !audioManager.isAttemptingToConnect()){
-            VoiceChannel vs = msg.getMember().getVoiceState().getChannel();
+            VoiceChannel vs = target.getVoiceState().getChannel();
             audioManager.openAudioConnection(vs);
         }
     }
