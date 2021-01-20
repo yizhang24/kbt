@@ -24,3 +24,7 @@ dependencies {
 application{
     mainClassName = 'kiwibot.Main'
 }
+
+run{
+    standardInput = System.in
+}

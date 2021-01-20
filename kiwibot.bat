@@ -1,2 +1,2 @@
-cd ./kiwibot
-./gradlew run
+call ./gradlew run --console=plain
+pause

@@ -51,7 +51,7 @@ public class VoteCommand extends MasterCommand {
         System.out.println("Question is: "+question);
         String[] options = splitString[1].substring(1).split(" ");
         if(options.length > 10){
-            _channel.sendMessage("You fool! 10 options is way to many for a mortal mind to comprehend.").queue();
+            _channel.sendMessage("Can't have more than 10 options.  Why would you want to anyway?").queue();
             return;
         }
         System.out.println("Options: "+ Arrays.toString(options));

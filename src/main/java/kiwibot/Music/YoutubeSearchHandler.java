@@ -11,6 +11,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import kiwibot.Main;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,11 +29,9 @@ public class YoutubeSearchHandler {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
     private static String apikey;
-    private Path tokenPath = Paths.get(Paths.get(System.getProperty("user.dir"))+"/musicapikey.txt");
 
-    YoutubeSearchHandler() throws IOException {
-        //System.out.println("YoutubeSearchHandler.java: " + tokenPath);
-        apikey = new String(Files.readAllBytes(tokenPath));
+    YoutubeSearchHandler() {
+        apikey = Main.configuration.ytApiToken;
         yt = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
             @Override
             public void initialize(HttpRequest request) throws IOException {

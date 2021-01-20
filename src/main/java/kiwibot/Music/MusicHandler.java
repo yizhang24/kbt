@@ -24,12 +24,14 @@ import java.util.concurrent.TimeUnit;
 
 
 public class MusicHandler extends MasterCommand {
-    private final String[] broughtToYouBy = new String[]{"Xander maining Tone", "haha epg go whoosh", "big chungus", "Ray's 1k voices", "the scp foundation","ur mom lamo", "the seventh seraph cqc 12"};
+    private final List<String> broughtToYouBy;
     private final AudioPlayerManager playerManager;
     private final Map<Long,GuildMusicManager> musicManagerList;
     private final YoutubeSearchHandler searchHandler = new YoutubeSearchHandler();
 
     public MusicHandler() throws IOException {
+        broughtToYouBy = Main.configuration.btybMessages;
+
         this.name = "music";
         this.musicManagerList = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
@@ -183,10 +185,10 @@ public class MusicHandler extends MasterCommand {
                         .addField("Song length", duration,true)
                         .addField("Requested By", author.getEffectiveName(), true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
-                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
+                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.size()-1);
                 System.out.println(broughtToYouBuyIndex);
                 try {
-                    eb.setFooter("Brought to you by " + broughtToYouBy[broughtToYouBuyIndex]);
+                    eb.setFooter("Brought to you by " + broughtToYouBy.get(broughtToYouBuyIndex));
                 }catch(ArrayIndexOutOfBoundsException e){
                     eb.setFooter("Nick is gay");
                 }
@@ -215,10 +217,10 @@ public class MusicHandler extends MasterCommand {
                         .addField("Song length", duration,true)
                         .addField("Requested By", author.getEffectiveName(),true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
-                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.length-1);
+                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.size()-1);
                 System.out.println(broughtToYouBuyIndex);
                 try {
-                    eb.setFooter("Brought to you by " + broughtToYouBy[broughtToYouBuyIndex]);
+                    eb.setFooter("Brought to you by " + broughtToYouBy.get(broughtToYouBuyIndex));
                 }catch(ArrayIndexOutOfBoundsException e){
                     eb.setFooter("Nick is gay");
                 }

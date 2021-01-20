@@ -11,7 +11,7 @@ import java.util.List;
 
 public class StatusCommand extends MasterCommand{
 
-    private StatusHelper status = new StatusHelper();
+    private final StatusHelper status = new StatusHelper();
 
     public StatusCommand() {
         this.name = "status";
