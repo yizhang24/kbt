@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import kiwibot.Commands.MasterCommand;
+import kiwibot.Config;
 import kiwibot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -60,6 +61,22 @@ public class MusicHandler extends MasterCommand {
         return guildManager;
     }
     public void HandleCommand(MessageReceivedEvent e, List<String> _args){
+        String guildDJRoleID = Main.configuration.guilds.get(e.getGuild().getId()).djRoleID;
+
+        System.out.println(guildDJRoleID);
+        if (guildDJRoleID != null){
+            Boolean hasPerms = false;
+            for (Role role: e.getMember().getRoles()) {
+                System.out.println(role.getId());
+                if(role.getId().equals(guildDJRoleID)) hasPerms = true;
+            }
+            if(!hasPerms){
+                e.getChannel().sendMessage("You don't have the correct roles to use this feature.").queue();
+                return;
+            }
+        }
+
+
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < _args.size(); i++) {
             sb.append(_args.get(i));

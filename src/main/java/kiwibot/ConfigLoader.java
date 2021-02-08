@@ -2,15 +2,18 @@ package kiwibot;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
 public class ConfigLoader {
-    private Config config;
+    private Config readConfig;
+    private Config finalConfig;
     private final Gson gson = new GsonBuilder().create();
     private final Path jsonPath;
 
@@ -20,25 +23,29 @@ public class ConfigLoader {
         jsonPath = _jsonPath;
         try{
             FileReader reader = new FileReader(jsonPath.toString());
-            config = gson.fromJson(reader, Config.class);
+            readConfig = gson.fromJson(reader, Config.class);
+            finalConfig = createNewConfig(readConfig.discordToken, readConfig.ytApiToken, readConfig.prefix, readConfig.ignoredMessage, readConfig.btybMessages, readConfig.guilds);
         } catch(FileNotFoundException e){
-            config = createNewConfig(null, null, null, null, null);
+            System.out.println("Config file not found.  Creating new config.");
+            finalConfig = createNewConfig(null, null, null, null, null, null);
+        } catch(JsonSyntaxException e){
+            System.out.println("Config file is different than expected.  Creating new config.");
+            finalConfig = createNewConfig(null, null, null, null, null, null);
         }
 
 
     }
     public Config build(){
-        return config;
+        return finalConfig;
     }
 
-    public Config createNewConfig(String _discordToken, String _musicToken, String _prefix, String _ignoreMessage, List<String> _btybMsg) throws IOException {
+    public Config createNewConfig(String _discordToken, String _musicToken, String _prefix, String _ignoreMessage, List<String> _btybMsg, HashMap<String, Config.Guild> guilds) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String discordToken;
         String ytApiToken;
         String prefix;
         String ignoredMessage;
         List<String> btybMessages;
-        System.out.println("kiwibotconfig.json not detected. Creating new config.");
         if(_discordToken != null){
             discordToken = _discordToken;
         } else{
@@ -89,5 +96,17 @@ public class ConfigLoader {
             err.printStackTrace();
         }
         return config;
+    }
+
+    public void updateConfig(Config config){
+        try{
+            FileWriter writer = new FileWriter(jsonPath.toString());
+            gson.toJson(config, writer);
+            writer.flush();
+            writer.close();
+
+        } catch(IOException err){
+            err.printStackTrace();
+        }
     }
 }
