@@ -47,11 +47,11 @@ public class Main {
 
         commandHelper.registerCommand(new StatusCommand());
         commandHelper.registerCommand(new IgnoreCommand());
-        commandHelper.registerCommand(new CancelCommand());
+        commandHelper.registerCommand(new CensorCommand());
         commandHelper.registerCommand(new VoteCommand());
         commandHelper.registerCommand(musicHandler);
         commandHelper.registerCommand(new RepeatCommand());
-        commandHelper.registerCommand(new DefaultCommand());
+        commandHelper.registerCommand(new FortniteCommand());
         commandHelper.registerCommand(new SettingsCommand());
 
         jda.addEventListeners(commandHandler);

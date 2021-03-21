@@ -226,6 +226,9 @@ public class MusicHandler extends MasterCommand {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
+
+                channel.sendMessage("Loaded playlist \"" + playlist.getName() + "\".  First track:").queue();
+
                 AudioTrack track = playlist.getTracks().get(0);
                 AudioTrackInfo info = track.getInfo();
                 String duration = ConvertTime(track.getDuration());
@@ -248,12 +251,12 @@ public class MusicHandler extends MasterCommand {
                 }
                 if(finalThumb != null) eb.setThumbnail(finalThumb);
                 channel.sendMessage(eb.build()).queue();
-                if (forceplay) {
-                    ForcePlay(guild, author, musicManager, track, false);
+
+                for(AudioTrack song: playlist.getTracks()){
+                    Play(guild, author ,musicManager,song, loop);
                 }
-                else{
-                    Play(guild, author ,musicManager,track, loop);
-                }
+
+
             }
             @Override
             public void noMatches() { //If no matches were found

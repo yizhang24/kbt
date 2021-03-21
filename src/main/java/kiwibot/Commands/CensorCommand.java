@@ -9,10 +9,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CancelCommand extends MasterCommand{
+public class CensorCommand extends MasterCommand{
 
 
-    public CancelCommand() {
+    public CensorCommand() {
         this.name = "cancel";
         commands.add("cancel");
         commands.add("decancel");

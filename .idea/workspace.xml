@@ -6,9 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="49a6d57c-3a84-451d-b217-fe97d049f8f8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/ConfigLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/ConfigLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/CensorCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/CensorCommand.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/FortniteCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/FortniteCommand.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Music/MusicHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Music/MusicHandler.java" afterDir="false" />
     </list>
@@ -68,17 +67,7 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="kiwibot.Main" />
       <module name="kiwibot.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="PROGRAM_PARAMETERS" value="-Xlint:deprecation" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -119,7 +108,13 @@
       <workItem from="1611165468782" duration="32000" />
       <workItem from="1612762152501" duration="68000" />
       <workItem from="1612762254330" duration="2630000" />
-      <workItem from="1612803118700" duration="6713000" />
+      <workItem from="1612803118700" duration="7601000" />
+      <workItem from="1612910861341" duration="686000" />
+      <workItem from="1614109287775" duration="1847000" />
+      <workItem from="1614472412288" duration="47000" />
+      <workItem from="1614816447855" duration="740000" />
+      <workItem from="1616347783927" duration="62000" />
+      <workItem from="1616348731740" duration="744000" />
     </task>
     <servers />
   </component>

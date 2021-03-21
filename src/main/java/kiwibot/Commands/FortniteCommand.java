@@ -8,11 +8,11 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 
-public class DefaultCommand extends MasterCommand{
+public class FortniteCommand extends MasterCommand{
 
     private StatusHelper status = new StatusHelper();
 
-    public DefaultCommand() {
+    public FortniteCommand() {
         this.name = "defaultdance";
         commands.add("defaultdance");
         commands.add("fortnite");
