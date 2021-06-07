@@ -37,7 +37,7 @@ public class IgnoreCommand extends MasterCommand {
                     Main.commandHandler.sendMessage(_e.getChannel(),"<@!" + userID + ">");
                 }
             default:
-                System.out.println("No commnand recognized");
+                System.out.println("Ignore Command: No commnand recognized");
         }
     }
 

@@ -39,7 +39,7 @@ public class StatusCommand extends MasterCommand{
             status.ChangeStatus(OnlineStatus.INVISIBLE);
             break;
         default:
-            System.out.println("No command recognized");
+            System.out.println("Status Command: No command recognized");
             return;
         }
     }

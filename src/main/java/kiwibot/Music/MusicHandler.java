@@ -9,7 +9,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import kiwibot.Commands.MasterCommand;
-import kiwibot.Config;
 import kiwibot.Main;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -39,6 +38,8 @@ public class MusicHandler extends MasterCommand {
         this.commands.add("play");
         this.commands.add("loop");
         this.commands.add("np");
+        this.commands.add("dont");
+        this.commands.add("no");
         this.commands.add("nowplaying");
         this.commands.add("skip");
         this.commands.add("replay");
@@ -63,11 +64,9 @@ public class MusicHandler extends MasterCommand {
     public void HandleCommand(MessageReceivedEvent e, List<String> _args){
         String guildDJRoleID = Main.configuration.guilds.get(e.getGuild().getId()).djRoleID;
 
-        System.out.println(guildDJRoleID);
         if (guildDJRoleID != null){
             Boolean hasPerms = false;
             for (Role role: e.getMember().getRoles()) {
-                System.out.println(role.getId());
                 if(role.getId().equals(guildDJRoleID)) hasPerms = true;
             }
             if(!hasPerms){
@@ -102,12 +101,14 @@ public class MusicHandler extends MasterCommand {
             case "rewind":
                 Replay(msg.getGuild(), msg.getTextChannel(), msg.getMember());
                 break;
+            case "dont":
+            case "no":
             case "stop":
                 Stop(msg.getGuild());
                 break;
             case "seek":
                 query = query.trim();
-                System.out.println("Query = "  + query);
+                System.out.println("Music Command: Seek Query: " + query);
                 if(!query.matches("^[0-9:]+$")) {
                     msg.getChannel().sendMessage("Please input time the the format HH:MM:SS").queue();
                     //return;
@@ -120,7 +121,6 @@ public class MusicHandler extends MasterCommand {
                     long minutes;
                     long seconds;
                     String[] values = query.split(":");
-                    System.out.println(Arrays.toString(values));
                     if(values.length == 2){
                         minutes = Long.parseLong(values[0]);
                         seconds = Long.parseLong(values[1]);
@@ -140,7 +140,6 @@ public class MusicHandler extends MasterCommand {
                 }
             case "cut":
                 int i;
-                System.out.println(query);
                 try {
                     i = Integer.parseInt(query);
                 }catch(Exception exception){
@@ -159,7 +158,6 @@ public class MusicHandler extends MasterCommand {
 
     public void LoadTrack(final Guild guild, final TextChannel channel, final Member author, final String query, final boolean loop, final boolean forceplay){
         //Check if user is currently in a voice channel
-        System.out.println(author.getEffectiveName());
         if(!author.getVoiceState().inVoiceChannel()){
             channel.sendMessage("You have to be in a channel").queue();
             return;
@@ -172,7 +170,7 @@ public class MusicHandler extends MasterCommand {
 
         //Check if the user specified a specific youtube link
         if(YoutubeSearchHandler.ValidateYTUrl(query)){
-            System.out.println("Direct");
+            System.out.println("Music Handler: Direct URL Found");
             RestAction<Message> ra = channel.sendMessage("Fetching audio from YouTube URL...");
             tempMsg = ra.complete();
             address = query.trim();
@@ -184,10 +182,9 @@ public class MusicHandler extends MasterCommand {
             }
             address = res.getId().getVideoId();
             thumb = res.getSnippet().getThumbnails().getDefault().getUrl();
-            System.out.println(thumb);
         }
         //Prints address to console
-        System.out.println("Address = \"" + address + '"');
+        System.out.println("Music Handler: Video Address: \"" + address + '"');
         //Deletes loading message
         if(tempMsg != null) tempMsg.delete().queue();
         String finalThumb = thumb;
@@ -203,7 +200,6 @@ public class MusicHandler extends MasterCommand {
                         .addField("Requested By", author.getEffectiveName(), true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
                 int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.size()-1);
-                System.out.println(broughtToYouBuyIndex);
                 try {
                     eb.setFooter("Brought to you by " + broughtToYouBy.get(broughtToYouBuyIndex));
                 }catch(ArrayIndexOutOfBoundsException e){
@@ -238,7 +234,6 @@ public class MusicHandler extends MasterCommand {
                         .addField("Requested By", author.getEffectiveName(),true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
                 int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.size()-1);
-                System.out.println(broughtToYouBuyIndex);
                 try {
                     eb.setFooter("Brought to you by " + broughtToYouBy.get(broughtToYouBuyIndex));
                 }catch(ArrayIndexOutOfBoundsException e){
@@ -260,7 +255,7 @@ public class MusicHandler extends MasterCommand {
             }
             @Override
             public void noMatches() { //If no matches were found
-                System.out.println(finalAddress);
+                System.out.println("Music Handler: No Matches Found.  Address: " + finalAddress);
                 channel.sendMessage("No results found. Did you misspell something? (You probably did)").queue();
             }
 
@@ -286,7 +281,7 @@ public class MusicHandler extends MasterCommand {
         if(guildManager.scheduler.NextTrack()){
             channel.sendMessage("Current track cast into the shadow realm.  Now playing next track.").queue();
         }else{ //If no songs are left in queue
-            System.out.println("No songs left");
+            System.out.println("Music Handler: No songs left in queue, cannot skip.");
             Stop(channel.getGuild());
         }
     }
@@ -297,7 +292,6 @@ public class MusicHandler extends MasterCommand {
         GuildMusicManager guildManager = getGuildManager(guild);
         AudioTrack track = scheduler.player.getPlayingTrack();
         if(track == null) track = scheduler.lastTrack;
-        System.out.println(track);
         if(track != null){
             ForcePlay(guild, member, guildManager,track.makeClone(),false);
             channel.sendMessage("Repeating last track.  Now playing "+track.getInfo().title).queue();

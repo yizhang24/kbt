@@ -208,7 +208,7 @@ public class FortniteCommand extends MasterCommand{
                         "\u2800\u2800\u2800\u2800\u28F6\u283F\u283F\u281B").queue();
 
             default:
-                System.out.println("No command recognized");
+                System.out.println("Fortnite Command: No command recognized");
                 return;
         }
     }

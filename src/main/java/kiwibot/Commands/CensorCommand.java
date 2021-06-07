@@ -41,7 +41,7 @@ public class CensorCommand extends MasterCommand{
                     Main.commandHandler.sendMessage(_e.getChannel(),"<@!" + userID + ">");
                 }
             default:
-                System.out.println("No command recognized");
+                System.out.println("Censor Command: No command recognized");
         }
     }
 

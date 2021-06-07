@@ -1,6 +1,8 @@
 package kiwibot;
 
 import kiwibot.Commands.*;
+import kiwibot.Config.ConfigLoader;
+import kiwibot.Config.ConfigInfo;
 import kiwibot.Music.MusicHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -19,7 +21,7 @@ public class Main {
     public static CommandHelper commandHelper = new CommandHelper();
     public static CommandHandler commandHandler;
     public static MusicHandler musicHandler;
-    public static Config configuration;
+    public static ConfigInfo configuration;
     public static ConfigLoader configLoader;
 
 
@@ -28,12 +30,11 @@ public class Main {
         Path jsonPath = Paths.get(System.getProperty("user.dir") + "\\kiwibotconfig.json");
 
         configLoader = new ConfigLoader(jsonPath);
-        configuration = configLoader.build();
+        configuration = configLoader.finalConfig;
 
 
-        prefix = configuration.prefix;
 
-        commandHandler = new CommandHandler(prefix);
+        commandHandler = new CommandHandler();
 
         try {
             musicHandler = new MusicHandler();
@@ -56,14 +57,11 @@ public class Main {
 
         jda.addEventListeners(commandHandler);
 
-        jda.setActivity(Activity.watching("Something"));
+        jda.setActivity(Activity.competing("Pokemon: Mewtwo Strikes Back Evolution"));
         client = jda.build().awaitReady();
 
         configuration.addGuilds();
-
-
         configLoader.updateConfig(configuration);
-
     }
 
     public void ChangeStatus(OnlineStatus _status){

@@ -1,4 +1,4 @@
-package kiwibot;
+package kiwibot.Config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,17 +12,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ConfigLoader {
-    private ConfigTemplate readConfig;
-    public ConfigTemplate finalConfig;
+    public static ConfigInfo finalConfig;
     private final Gson gson = new GsonBuilder().create();
     private final Path jsonPath;
 
 
-    ConfigLoader(Path _jsonPath) throws IOException {
+    public ConfigLoader(Path _jsonPath) throws IOException {
         jsonPath = _jsonPath;
         try{
             FileReader reader = new FileReader(jsonPath.toString());
-            readConfig = gson.fromJson(reader, ConfigTemplate.class);
+            ConfigInfo readConfig = gson.fromJson(reader, ConfigInfo.class);
             finalConfig = createNewConfig(readConfig.discordToken, readConfig.ytApiToken, readConfig.ignoredMessage, readConfig.btybMessages, readConfig.guilds);
         } catch(FileNotFoundException e){
             System.out.println("Config Loader: Config file not found.  Creating new config.");
@@ -36,7 +35,7 @@ public class ConfigLoader {
     }
 
 
-    public ConfigTemplate createNewConfig(String _discordToken, String _musicToken, String _ignoreMessage, List<String> _btybMsg, HashMap<String, ConfigTemplate.Guild> guilds) throws IOException {
+    public ConfigInfo createNewConfig(String _discordToken, String _musicToken, String _ignoreMessage, List<String> _btybMsg, HashMap<String, GuildInfo> guilds) throws IOException {
         Scanner scanner = new Scanner(System.in);
         String discordToken;
         String ytApiToken;
@@ -74,7 +73,7 @@ public class ConfigLoader {
                 btybMessages.add(in);
             }
         }
-        ConfigTemplate config = new ConfigTemplate(discordToken, ytApiToken, ignoredMessage, btybMessages);
+        ConfigInfo config = new ConfigInfo(discordToken, ytApiToken, ignoredMessage, btybMessages);
         try{
             FileWriter writer = new FileWriter(jsonPath.toString());
             gson.toJson(config, writer);
@@ -87,7 +86,7 @@ public class ConfigLoader {
         return config;
     }
 
-    public void updateConfig(ConfigTemplate config){
+    public void updateConfig(ConfigInfo config){
         try{
             FileWriter writer = new FileWriter(jsonPath.toString());
             gson.toJson(config, writer);

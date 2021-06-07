@@ -42,14 +42,12 @@ public class YoutubeSearchHandler {
     public static SearchResult Search(String query) {
         YouTube.Search.List search;
         try {
-            System.out.println(query);
             search = yt.search().list("snippet,id")
                     .setKey(apikey)
                     .setQ(query)
                     .setType("video")
                     .setMaxResults(1L)
                     .setFields("items(id/videoId,snippet)");
-            System.out.println(search.execute());
             ArrayList res = (ArrayList) search.execute().get("items");
             if(res.size()==0) {
                return null;
@@ -57,11 +55,11 @@ public class YoutubeSearchHandler {
             SearchResult video = (SearchResult) res.get(0);
             return video;
         } catch (GoogleJsonResponseException e) {
-            System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
+            System.err.println("YoutubeSearchHandler: There was a service error: " + e.getDetails().getCode() + " : "
                     + e.getDetails().getMessage());
             return null;
         } catch (IOException e) {
-            System.err.println("There was an IO error: " + e.getCause() + " : " + e.getMessage());
+            System.err.println("YoutubeSearchHandler: There was an IO error: " + e.getCause() + " : " + e.getMessage());
             return null;
         } catch (Throwable t) {
             t.printStackTrace();

@@ -43,15 +43,14 @@ public class RepeatCommand extends MasterCommand {
                 thread.start();
                 break;
             case "stopspam":
-                System.out.println("stopping spam");
+                System.out.println("Repeat Command: stopping spam");
                 isSpamming = false;
                 break;
             default:
-                System.out.println("No command recognized");
+                System.out.println("Repeat Command: No command recognized");
         }
     }
     private void spam(String message, MessageChannel channel){
-            System.out.println(isSpamming);
             channel.sendMessage(message).queue();
     }
 }

@@ -14,44 +14,36 @@ public class TrackScheduler extends AudioEventAdapter {
     public final AudioPlayer player;
     public BlockingQueue<AudioTrack> queue;
     private final AudioManager manager;
-    public int queueLength;
     public boolean loop;
     public AudioTrack lastTrack;
     public TrackScheduler(AudioPlayer player, AudioManager manager){
         this.player = player;
         this.manager = manager;
         queue = new LinkedBlockingDeque<>();
-        queueLength = queue.size();
     }
 
     public void Queue(AudioTrack track, boolean _loop){
         loop = _loop;
-        queue.offer(track);
+        if(queue.size() > 0){
+            queue.offer(track);
+        }
         player.startTrack(track,true);
-        if(!queue.isEmpty()) System.out.println("music queue = " + queue.toString());
-        queueLength = queue.size();
         PrintQueue();
     }
 
     public void ForcePlay(AudioTrack track, boolean _loop){
         loop = _loop;
         queue.clear();
-        queueLength = 0;
-        System.out.println(player.startTrack(track, false));
+        player.startTrack(track, false);
     }
 
     public boolean NextTrack(){
-        //System.out.println("queue size = " +queue.size());
-        System.out.println(queue);
-        //System.out.println(queue.peek());
         if(queue.size() > 0) {
-            queue.poll();
+            //queue.poll();
             player.startTrack(queue.poll(), false);
-            System.out.println("Shoullddd be working");
             return true;
         }
         else{
-            System.out.println("track is nonexistent");
             return false;
         }
     }
@@ -65,7 +57,6 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void ClearQueue(){
         if(!queue.isEmpty()) queue.clear();
-        queueLength = queue.size();
     }
 
     public boolean Cut(int index){
@@ -80,31 +71,25 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason){
-        System.out.println(endReason);
+        System.out.println("Track Scheduler: End reason: " + endReason);
         PrintQueue();
         this.lastTrack = track;
         if(endReason == AudioTrackEndReason.REPLACED){
             return;
         }
         if(endReason.mayStartNext && queue.size() > 0) {
-            System.out.println("Next");
             NextTrack();
             return;
         }else if(loop){
-            System.out.println("looped!");
             player.startTrack(lastTrack.makeClone(),false);
         }else {
             ClearQueue();
-            System.out.println("Stop");
             manager.closeAudioConnection();
         }
 
     }
     public void SetLoop(boolean _loop){
         loop = _loop;
-    }
-    public int GetQueueLength(){
-        return queueLength;
     }
     public BlockingQueue<AudioTrack> getQueue(){return queue;}
     public void PrintQueue(){
