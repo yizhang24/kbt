@@ -199,10 +199,10 @@ public class MusicHandler extends MasterCommand {
                         .addField("Song length", duration,true)
                         .addField("Requested By", author.getEffectiveName(), true)
                         .addField("Queue position", String.valueOf(musicManager.scheduler.queue.size()),false);
-                int broughtToYouBuyIndex = (int) Math.round(Math.random()* broughtToYouBy.size()-1);
+                int broughtToYouBuyIndex = (int) Math.round(Math.random()* (broughtToYouBy.size() - 1));
                 try {
                     eb.setFooter("Brought to you by " + broughtToYouBy.get(broughtToYouBuyIndex));
-                }catch(ArrayIndexOutOfBoundsException e){
+                }catch(IndexOutOfBoundsException e){
                     eb.setFooter("Nick is gay");
                 }
                 if(!loop){

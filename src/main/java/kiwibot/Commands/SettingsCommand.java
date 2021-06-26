@@ -33,7 +33,8 @@ public class SettingsCommand extends MasterCommand{
                     currentPrefixLength = 1;
                 }
                 System.out.println("Prefix length " + currentPrefixLength);
-                String query = _e.getMessage().getContentRaw().substring(currentPrefixLength+11,_e.getMessage().getContentRaw().length()-1);
+                System.out.println("Text message |" + _e.getMessage().getContentRaw()+ "|");
+                String query = _e.getMessage().getContentRaw().substring(currentPrefixLength+10);
                 System.out.println(query);
                 _e.getChannel().sendMessage("Prefix set to \"" + query + "\" for this server.").queue();
                 Main.configLoader.finalConfig.setPrefix(_e.getGuild().getId(),query);

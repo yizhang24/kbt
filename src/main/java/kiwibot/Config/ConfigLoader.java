@@ -15,6 +15,7 @@ public class ConfigLoader {
     public static ConfigInfo finalConfig;
     private final Gson gson = new GsonBuilder().create();
     private final Path jsonPath;
+    private final boolean debug = false;
 
 
     public ConfigLoader(Path _jsonPath) throws IOException {
@@ -22,55 +23,60 @@ public class ConfigLoader {
         try{
             FileReader reader = new FileReader(jsonPath.toString());
             ConfigInfo readConfig = gson.fromJson(reader, ConfigInfo.class);
-            finalConfig = createNewConfig(readConfig.discordToken, readConfig.ytApiToken, readConfig.ignoredMessage, readConfig.btybMessages, readConfig.guilds);
+            finalConfig = createNewConfig(readConfig.discordToken, readConfig.ytApiToken, readConfig.ignoredMessage, readConfig.btybMessages, readConfig.guilds, debug);
         } catch(FileNotFoundException e){
             System.out.println("Config Loader: Config file not found.  Creating new config.");
-            finalConfig = createNewConfig(null, null, null, null, null);
+            finalConfig = createNewConfig(null, null, null, null, null, debug);
         } catch(JsonSyntaxException e){
             System.out.println("Config Loader: Config file is different than expected.  Creating new config.");
-            finalConfig = createNewConfig(null, null,  null, null, null);
+            finalConfig = createNewConfig(null, null,  null, null, null, debug);
         }
 
 
     }
 
 
-    public ConfigInfo createNewConfig(String _discordToken, String _musicToken, String _ignoreMessage, List<String> _btybMsg, HashMap<String, GuildInfo> guilds) throws IOException {
-        Scanner scanner = new Scanner(System.in);
+    public ConfigInfo createNewConfig(String _discordToken, String _musicToken, String _ignoreMessage, List<String> _btybMsg, HashMap<String, GuildInfo> guilds, Boolean debug) throws IOException {
         String discordToken;
         String ytApiToken;
         String ignoredMessage;
         List<String> btybMessages;
-        if(_discordToken != null){
-            discordToken = _discordToken;
-        } else{
-            System.out.println("Config Loader: Input Discord Token:");
-            discordToken = scanner.nextLine();
-        }
 
-        if(_musicToken != null){
-            ytApiToken = _musicToken;
-        } else{
-            System.out.println("Config Loader: Input Youtube API Token:");
-            ytApiToken = scanner.nextLine();
-        }
+        if(debug){
 
-        if(_ignoreMessage != null){
-            ignoredMessage = _ignoreMessage;
-        } else{
-            System.out.println("Config Loader: Input message sent to ignored users:");
-            ignoredMessage = scanner.nextLine();
-        }
+        }else{
+            Scanner scanner = new Scanner(System.in);
+            if(_discordToken != null){
+                discordToken = _discordToken;
+            } else{
+                System.out.println("Config Loader: Input Discord Token:");
+                discordToken = scanner.nextLine();
+            }
 
-        if(_btybMsg != null){
-            btybMessages = _btybMsg;
-        } else{
-            System.out.println("Config Loader: Input \"Brought to you by \" messages. Type \"_exit\" to exit.  10 message maximum.");
-            btybMessages = new ArrayList<String>();
-            for (int i = 0; i < 10; i++) {
-                String in = scanner.nextLine();
-                if(in.equals("_exit")) break;
-                btybMessages.add(in);
+            if(_musicToken != null){
+                ytApiToken = _musicToken;
+            } else{
+                System.out.println("Config Loader: Input Youtube API Token:");
+                ytApiToken = scanner.nextLine();
+            }
+
+            if(_ignoreMessage != null){
+                ignoredMessage = _ignoreMessage;
+            } else{
+                System.out.println("Config Loader: Input message sent to ignored users:");
+                ignoredMessage = scanner.nextLine();
+            }
+
+            if(_btybMsg != null){
+                btybMessages = _btybMsg;
+            } else{
+                System.out.println("Config Loader: Input \"Brought to you by \" messages. Type \"_exit\" to exit.  10 message maximum.");
+                btybMessages = new ArrayList<String>();
+                for (int i = 0; i < 10; i++) {
+                    String in = scanner.nextLine();
+                    if(in.equals("_exit")) break;
+                    btybMessages.add(in);
+                }
             }
         }
         ConfigInfo config = new ConfigInfo(discordToken, ytApiToken, ignoredMessage, btybMessages);

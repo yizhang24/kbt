@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="49a6d57c-3a84-451d-b217-fe97d049f8f8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/CensorCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/CensorCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/FortniteCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Commands/FortniteCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/kiwibot/Music/MusicHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/kiwibot/Music/MusicHandler.java" afterDir="false" />
-    </list>
+    <list default="true" id="49a6d57c-3a84-451d-b217-fe97d049f8f8" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -115,6 +109,7 @@
       <workItem from="1614816447855" duration="740000" />
       <workItem from="1616347783927" duration="62000" />
       <workItem from="1616348731740" duration="744000" />
+      <workItem from="1624656024162" duration="4000" />
     </task>
     <servers />
   </component>

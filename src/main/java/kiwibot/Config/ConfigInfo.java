@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ConfigInfo {
-    public static String discordToken;
-    public static String ytApiToken;
-    public static String ignoredMessage;
-    public static List<String> btybMessages;
-    public static HashMap<String, GuildInfo> guilds = new HashMap<>();
+    public String discordToken;
+    public String ytApiToken;
+    public String ignoredMessage;
+    public List<String> btybMessages;
+    public HashMap<String, GuildInfo> guilds = new HashMap<>();
 
     ConfigInfo(String _discordToken, String _ytApiToken, String _ignoreMessage, List<String> _btybMessage){
         discordToken = _discordToken;
