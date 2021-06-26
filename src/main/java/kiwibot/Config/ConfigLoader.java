@@ -37,10 +37,10 @@ public class ConfigLoader {
 
 
     public ConfigInfo createNewConfig(String _discordToken, String _musicToken, String _ignoreMessage, List<String> _btybMsg, HashMap<String, GuildInfo> guilds, Boolean debug) throws IOException {
-        String discordToken;
-        String ytApiToken;
-        String ignoredMessage;
-        List<String> btybMessages;
+        String discordToken = "";
+        String ytApiToken = "";
+        String ignoredMessage = "";
+        List<String> btybMessages = new ArrayList<String>();
 
         if(debug){
 
@@ -79,7 +79,7 @@ public class ConfigLoader {
                 }
             }
         }
-        ConfigInfo config = new ConfigInfo(discordToken, ytApiToken, ignoredMessage, btybMessages);
+        ConfigInfo config = new ConfigInfo(discordToken, ytApiToken, ignoredMessage, btybMessages,guilds);  
         try{
             FileWriter writer = new FileWriter(jsonPath.toString());
             gson.toJson(config, writer);

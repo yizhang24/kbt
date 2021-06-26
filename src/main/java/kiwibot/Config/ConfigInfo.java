@@ -12,13 +12,12 @@ public class ConfigInfo {
     public List<String> btybMessages;
     public HashMap<String, GuildInfo> guilds = new HashMap<>();
 
-    ConfigInfo(String _discordToken, String _ytApiToken, String _ignoreMessage, List<String> _btybMessage){
+    ConfigInfo(String _discordToken, String _ytApiToken, String _ignoreMessage, List<String> _btybMessage, HashMap<String, GuildInfo> guildlist){
         discordToken = _discordToken;
         ytApiToken = _ytApiToken;
         ignoredMessage = _ignoreMessage;
         btybMessages = _btybMessage;
-
-
+        guilds = guildlist;
     }
 
     public void addGuilds(){
