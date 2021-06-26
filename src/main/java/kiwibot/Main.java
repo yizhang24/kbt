@@ -54,6 +54,7 @@ public class Main {
         commandHelper.registerCommand(new RepeatCommand());
         commandHelper.registerCommand(new FortniteCommand());
         commandHelper.registerCommand(new SettingsCommand());
+        commandHelper.registerCommand(new ShibeCommand());
 
         jda.addEventListeners(commandHandler);
 
