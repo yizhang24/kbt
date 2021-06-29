@@ -31,6 +31,7 @@ public class Main {
     public static RepeatCommand repeatCommand;
     public static FortniteCommand fortniteCommand;
     public static SettingsCommand settingsCommand;
+    public static ShibeCommand shibeCommand;
 
     public static void main(String[] args) throws IOException, LoginException, InterruptedException {
 
@@ -47,6 +48,7 @@ public class Main {
         repeatCommand = new RepeatCommand();
         fortniteCommand = new FortniteCommand();
         settingsCommand = new SettingsCommand();
+        shibeCommand = new ShibeCommand();
 
         try {
             musicHandler = new MusicHandler();
@@ -66,6 +68,7 @@ public class Main {
         commandHelper.registerCommand(repeatCommand);
         commandHelper.registerCommand(fortniteCommand);
         commandHelper.registerCommand(settingsCommand);
+        commandHelper.registerCommand(shibeCommand);
 
         jda.addEventListeners(commandHandler);
 
