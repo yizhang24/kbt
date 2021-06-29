@@ -3,6 +3,7 @@ package kiwibot.Commands;
 import kiwibot.Main;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
@@ -34,16 +35,26 @@ public class SettingsCommand extends MasterCommand{
                 }
                 System.out.println("Prefix length " + currentPrefixLength);
                 System.out.println("Text message |" + _e.getMessage().getContentRaw()+ "|");
-                String query = _e.getMessage().getContentRaw().substring(currentPrefixLength+10);
+                String query;
+                try {
+                    query = _e.getMessage().getContentRaw().substring(currentPrefixLength+10);
+                } catch (StringIndexOutOfBoundsException e) {
+                    _e.getChannel().sendMessage("Please actually specify a valid prefix ;-;").queue();
+                    return;
+                }
                 System.out.println(query);
                 _e.getChannel().sendMessage("Prefix set to \"" + query + "\" for this server.").queue();
-                Main.configLoader.finalConfig.setPrefix(_e.getGuild().getId(),query);
-                Main.configLoader.updateConfig();
+                SetPrefix(query, _e.getGuild());
                 break;
             default:
                 System.out.println("Settings Command: No command recognized");
         }
 
         Main.configLoader.updateConfig(Main.configuration);
+    }
+
+    public void SetPrefix(String newPrefix, Guild guild){
+        Main.configLoader.finalConfig.setPrefix(guild.getId(),newPrefix);
+        Main.configLoader.updateConfig();
     }
 }

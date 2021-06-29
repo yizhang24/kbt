@@ -42,8 +42,7 @@ public class CommandHandler extends ListenerAdapter {
             System.out.println("CommandHandler.java: local prefix is " + localPrefix);
         } catch (NullPointerException e) {
             System.out.println("CommandHandler.java: No prefix found for guildid " + _e.getGuild().getId() + ", setting it to the default of \"!\"");
-    
-            Main.configLoader.updateConfig();
+            Main.settingsCommand.SetPrefix("!", _e.getGuild());
             localPrefix = "!";
         }
 

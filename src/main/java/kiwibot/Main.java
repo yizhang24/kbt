@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +24,13 @@ public class Main {
     public static MusicHandler musicHandler;
     public static ConfigInfo configuration;
     public static ConfigLoader configLoader;
-
+    public static StatusCommand statusCommand;
+    public static IgnoreCommand ignoreCommand;
+    public static CensorCommand censorCommand;
+    public static VoteCommand voteCommand;
+    public static RepeatCommand repeatCommand;
+    public static FortniteCommand fortniteCommand;
+    public static SettingsCommand settingsCommand;
 
     public static void main(String[] args) throws IOException, LoginException, InterruptedException {
 
@@ -31,10 +38,15 @@ public class Main {
 
         configLoader = new ConfigLoader(jsonPath);
         configuration = configLoader.finalConfig;
-
-
-
         commandHandler = new CommandHandler();
+
+        statusCommand = new StatusCommand();
+        ignoreCommand = new IgnoreCommand();
+        censorCommand = new CensorCommand();
+        voteCommand = new VoteCommand();
+        repeatCommand = new RepeatCommand();
+        fortniteCommand = new FortniteCommand();
+        settingsCommand = new SettingsCommand();
 
         try {
             musicHandler = new MusicHandler();
@@ -46,14 +58,14 @@ public class Main {
         jda = JDABuilder.createDefault(configuration.discordToken);
 
 
-        commandHelper.registerCommand(new StatusCommand());
-        commandHelper.registerCommand(new IgnoreCommand());
-        commandHelper.registerCommand(new CensorCommand());
-        commandHelper.registerCommand(new VoteCommand());
+        commandHelper.registerCommand(statusCommand);
+        commandHelper.registerCommand(ignoreCommand);
+        commandHelper.registerCommand(censorCommand);
+        commandHelper.registerCommand(voteCommand);
         commandHelper.registerCommand(musicHandler);
-        commandHelper.registerCommand(new RepeatCommand());
-        commandHelper.registerCommand(new FortniteCommand());
-        commandHelper.registerCommand(new SettingsCommand());
+        commandHelper.registerCommand(repeatCommand);
+        commandHelper.registerCommand(fortniteCommand);
+        commandHelper.registerCommand(settingsCommand);
 
         jda.addEventListeners(commandHandler);
 
