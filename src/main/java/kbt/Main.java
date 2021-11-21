@@ -5,6 +5,9 @@ package kbt;
 
 import javax.security.auth.login.LoginException;
 
+import com.typesafe.config.Config;
+
+import kbt.config.ConfigLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -12,9 +15,11 @@ public class Main {
 
     public static JDA instance;
 
+    private static final ConfigLoader configLoader = new ConfigLoader();
+
     public static void main(String[] args) {
         try {
-            JDABuilder jdaBuilder = JDABuilder.createDefault("token");
+            JDABuilder jdaBuilder = JDABuilder.createDefault(ConfigLoader.coreConfig.getString("discordtoken"));
             instance = jdaBuilder.build();
         } catch (LoginException e) {
             e.printStackTrace();
