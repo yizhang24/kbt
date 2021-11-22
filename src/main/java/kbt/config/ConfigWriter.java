@@ -21,10 +21,12 @@ public class ConfigWriter {
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(System.in));
 
+            
         System.out.println(Constants.GREEN + "Core Config file not found! Creating new config..." + Constants.RESET);
-
         System.out.println(Constants.GREEN + "Enter Discord Api Token (You can get an api token at " + Constants.CYAN + "https://discord.com/developers/applications" + Constants.GREEN + ")" + Constants.RESET);
+
         String token;
+
         try {
             token = reader.readLine();
             values.put("discordtoken", token);
@@ -33,12 +35,10 @@ public class ConfigWriter {
             e1.printStackTrace();
         }
         
-
         Config config = ConfigFactory.parseMap(values);
 
-        
-        FileWriter writer;
         try {
+            FileWriter writer;
             writer = new FileWriter(Constants.coreConfPath.resolve("core.config").toString());
             writer.write(config.root().render());
             writer.flush();
@@ -46,6 +46,7 @@ public class ConfigWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return config;
     } 
 

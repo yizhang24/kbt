@@ -15,8 +15,6 @@ public class Main {
 
     public static JDA instance;
 
-    private static final ConfigLoader configLoader = new ConfigLoader();
-
     public static void main(String[] args) {
         try {
             JDABuilder jdaBuilder = JDABuilder.createDefault(ConfigLoader.coreConfig.getString("discordtoken"));
