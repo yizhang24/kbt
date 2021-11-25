@@ -9,7 +9,7 @@ import kbt.Constants;
 
 public class ConfigLoader {
 
-    public static Config coreConfig;
+    public Config coreConfig;
 
     public ConfigLoader () {
         LoadConfig();
