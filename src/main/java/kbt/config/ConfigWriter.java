@@ -15,7 +15,7 @@ import kbt.Constants;
 
 public class ConfigWriter {
     
-    public static Config createConfig(){
+    public Config createConfig(){
         HashMap<String, Object> values = new HashMap<String, Object>();
         
         BufferedReader reader = new BufferedReader(
@@ -36,18 +36,19 @@ public class ConfigWriter {
         }
         
         Config config = ConfigFactory.parseMap(values);
+        writeConfig(config);
+        return config;
+    } 
 
+    public void writeConfig(Config config){
         try {
             FileWriter writer;
-            writer = new FileWriter(Constants.coreConfPath.resolve("core.config").toString());
+            writer = new FileWriter(Constants.coreConfPath.toFile());
             writer.write(config.root().render());
             writer.flush();
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return config;
-    } 
-
+    }
 }
