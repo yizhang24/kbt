@@ -17,6 +17,8 @@ public class Main {
 
     private static final ConfigLoader configLoader = new ConfigLoader();
 
+    private static final Events events = new Events();
+
     public static final Config config = configLoader.coreConfig;
 
     public static void main(String[] args) {
