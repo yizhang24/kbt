@@ -24,7 +24,7 @@ public class ConfigLoader {
     }
 
     private void loadConfig() {
-        File file = Constants.coreConfPath.toFile();
+        File file = Constants.CORE_CONF_PATH.toFile();
         System.out.println(file.toPath().toString());
 
         if (ConfigFactory.parseFile(file).isEmpty()) {

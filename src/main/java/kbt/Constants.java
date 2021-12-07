@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 
 public class Constants {
 
-    public static final Path coreConfPath = Paths.get(System.getProperty("user.dir")).resolve("Configs/core.conf");
+    public static final Path CORE_CONF_PATH = Paths.get(System.getProperty("user.dir")).resolve("Configs/core.conf");
 
     // Reset
     public static final String RESET = "\033[0m";  // Text Reset

@@ -43,7 +43,7 @@ public class ConfigWriter {
     public void writeConfig(Config config){
         try {
             FileWriter writer;
-            writer = new FileWriter(Constants.coreConfPath.toFile());
+            writer = new FileWriter(Constants.CORE_CONF_PATH.toFile());
             writer.write(config.root().render());
             writer.flush();
             writer.close();
