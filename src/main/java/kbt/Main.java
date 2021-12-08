@@ -6,7 +6,6 @@ package kbt;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
 
 import com.typesafe.config.Config;
@@ -18,7 +17,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
-import net.dv8tion.jda.api.managers.Presence;
 
 public class Main {
 
