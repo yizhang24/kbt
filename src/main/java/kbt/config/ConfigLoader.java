@@ -48,12 +48,13 @@ public class ConfigLoader {
             }
             guildInfo.put(guildId + ".prefix", "!");
         }
-        updateGuilds();
+        updateConfig(guildInfo);
     }
 
-    private void updateGuilds() {
-        Config guildConfig = ConfigFactory.parseMap(guildInfo);
-        coreConfig = coreConfig.withFallback(guildConfig);
+    public void updateConfig(Map<String, Object> configInfo) {
+        Config newConfig = ConfigFactory.parseMap(configInfo);
+        coreConfig = newConfig.withFallback(coreConfig);
         configWriter.writeConfig(coreConfig);
+        System.out.println(coreConfig.toString());
     }
 }

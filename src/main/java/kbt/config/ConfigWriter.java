@@ -5,11 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigRenderOptions;
 
 import kbt.Constants;
 
@@ -44,7 +42,7 @@ public class ConfigWriter {
         try {
             FileWriter writer;
             writer = new FileWriter(Constants.CORE_CONF_PATH.toFile());
-            writer.write(config.root().render());
+            writer.write(config.root().render(ConfigRenderOptions.concise().setFormatted(true)));
             writer.flush();
             writer.close();
         } catch (IOException e) {

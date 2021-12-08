@@ -16,7 +16,7 @@ public abstract class Command {
         this.aliases = aliases;
     }
 
-    public abstract void HandleCommand(MessageReceivedEvent e, List<String> args);
+    public abstract void HandleCommand(MessageReceivedEvent e, String comamnd, List<String> args);
 
     public ArrayList<String> getAliases() {
         return aliases;

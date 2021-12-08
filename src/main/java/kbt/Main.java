@@ -3,13 +3,22 @@
  */
 package kbt;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
 import javax.security.auth.login.LoginException;
 
 import com.typesafe.config.Config;
 
+import kbt.commands.Status;
 import kbt.config.ConfigLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Activity.ActivityType;
+import net.dv8tion.jda.api.managers.Presence;
 
 public class Main {
 
@@ -26,10 +35,48 @@ public class Main {
             String token = config.getString("discordtoken");
             JDABuilder jdaBuilder = JDABuilder.createDefault(token);
             instance = jdaBuilder.build().awaitReady();
+
+            if(config.hasPath("presence")) {
+                System.out.println("Stored presence found, setting.");
+                ActivityType activity = null;
+                OnlineStatus status = OnlineStatus.ONLINE;
+                String activityString = " ";
+                if(config.hasPath("presence.activity")) {
+                    activity = (ActivityType) config.getEnum(ActivityType.class, "presence.activity");
+                }
+                if(config.hasPath("presence.status")) {
+                    status = (OnlineStatus) config.getEnum(OnlineStatus.class, "presence.status");
+                }
+                if(config.hasPath("presence.string")) {
+                    activityString = config.getString("presence.string");
+                }
+                instance.getPresence().setPresence(status, Activity.of(activity, activityString), false);
+            }
+
+            events.registerCommand(new Status());
+            instance.addEventListener(events);
+
             configLoader.addGuilds(instance.getGuilds());
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public static void setStatus(Activity activity) {
+        setStatus(activity, instance.getPresence().getStatus());
+    }
+
+    public static void setStatus(OnlineStatus status) {
+        setStatus(instance.getPresence().getActivity(), status);
+    }
+    
+    public static void setStatus(Activity activity, OnlineStatus status) {
+        instance.getPresence().setPresence(status, activity, false);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("presence.activity", instance.getPresence().getActivity().getType().toString());
+        map.put("presence.status", instance.getPresence().getStatus().toString());
+        map.put("presence.string", instance.getPresence().getActivity().getName().toString());
+        configLoader.updateConfig(map);
     }
 }
