@@ -23,11 +23,10 @@ public class ConfigLoader {
         loadConfig();
     }
 
-    private void loadConfig() {
+    public void loadConfig() {
         File file = Constants.CORE_CONF_PATH.toFile();
-        System.out.println(file.toPath().toString());
 
-        if (ConfigFactory.parseFile(file).isEmpty()) {
+        if (ConfigFactory.parseFile(file).isEmpty() || ConfigFactory.parseFile(file).getString("discordtoken") == null) {
             configWriter.createConfig();
         }
         coreConfig = ConfigFactory.parseFile(file);
@@ -46,7 +45,7 @@ public class ConfigLoader {
                     continue;
                 }
             }
-            guildInfo.put(guildId + ".prefix", "!");
+            guildInfo.put(guildId + ".prefix", "?");
         }
         updateConfig(guildInfo);
     }
@@ -55,6 +54,5 @@ public class ConfigLoader {
         Config newConfig = ConfigFactory.parseMap(configInfo);
         coreConfig = newConfig.withFallback(coreConfig);
         configWriter.writeConfig(coreConfig);
-        System.out.println(coreConfig.toString());
     }
 }

@@ -38,6 +38,10 @@ dependencies {
     compile "com.typesafe:config:1.4.1"
 }
 
+run {
+    standardInput = System.in
+}
+
 application {
     // Define the main class for the application.
     mainClassName = 'kbt.Main'

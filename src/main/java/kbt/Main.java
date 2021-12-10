@@ -26,7 +26,7 @@ public class Main {
 
     private static final Events events = new Events();
 
-    public static final Config config = configLoader.coreConfig;
+    public static Config config = configLoader.coreConfig;
 
     public static void main(String[] args) {
         try {
@@ -34,31 +34,37 @@ public class Main {
             JDABuilder jdaBuilder = JDABuilder.createDefault(token);
             instance = jdaBuilder.build().awaitReady();
 
-            if(config.hasPath("presence")) {
+            if (config.hasPath("presence")) {
                 System.out.println("Stored presence found, setting.");
                 ActivityType activity = null;
                 OnlineStatus status = OnlineStatus.ONLINE;
                 String activityString = " ";
-                if(config.hasPath("presence.activity")) {
+                if (config.hasPath("presence.activity")) {
                     activity = (ActivityType) config.getEnum(ActivityType.class, "presence.activity");
                 }
-                if(config.hasPath("presence.status")) {
+                if (config.hasPath("presence.status")) {
                     status = (OnlineStatus) config.getEnum(OnlineStatus.class, "presence.status");
                 }
-                if(config.hasPath("presence.string")) {
+                if (config.hasPath("presence.string")) {
                     activityString = config.getString("presence.string");
                 }
                 instance.getPresence().setPresence(status, Activity.of(activity, activityString), false);
             }
 
+            configLoader.addGuilds(instance.getGuilds());
+            refreshConfig();
+
             events.registerCommand(new Status());
             instance.addEventListener(events);
 
-            configLoader.addGuilds(instance.getGuilds());
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private static void refreshConfig() {
+        config = configLoader.coreConfig;
     }
 
     public static void setStatus(Activity activity) {
