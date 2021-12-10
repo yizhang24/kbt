@@ -3,6 +3,7 @@ package kbt.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import kbt.Constants;
 import kbt.Main;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
@@ -43,9 +44,10 @@ public class Status extends Command {
                         activityType = ActivityType.COMPETING;
                         break;
                     default:
-                        activity = args.toString();
+                        activity = String.join(" ", args);
                 }
                 Main.setStatus(Activity.of(activityType, activity));
+                e.getMessage().addReaction(Constants.GREEN_CHECK).queue();
         }
     }
     
