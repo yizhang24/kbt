@@ -11,7 +11,7 @@ public class GuildMusicManager {
     public final TrackScheduler scheduler;
 
     public GuildMusicManager(AudioPlayerManager playerManager, AudioManager audioMananger){
-    player = playerManager.createPlayer();
+        player = playerManager.createPlayer();
         scheduler = new TrackScheduler(player, audioMananger);
         player.addListener(scheduler);
     }
@@ -19,4 +19,4 @@ public class GuildMusicManager {
         return new AudioPlayerSendHandler(player);
     }
 
-    }
+}

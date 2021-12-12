@@ -7,16 +7,22 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
+
+import net.dv8tion.jda.api.managers.AudioManager;
+
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 
 public class TrackScheduler extends AudioEventAdapter {
 
     public final AudioPlayer player;
     private final BlockingQueue<AudioTrack> queue;
+    private final AudioManager audioManager;
 
-    public TrackScheduler(AudioPlayer player) {
+    public TrackScheduler(AudioPlayer player, AudioManager audioManager) {
         this.player = player;
+        this.audioManager = audioManager;
         this.queue = new LinkedBlockingQueue<>();
+
     }
 
     public void queue(AudioTrack track) {
@@ -27,6 +33,12 @@ public class TrackScheduler extends AudioEventAdapter {
 
     public void nextTrack() {
         player.startTrack(queue.poll(), false);
+    }
+
+    public void stop() {
+        player.stopTrack();
+        queue.clear();
+        audioManager.closeAudioConnection();
     }
 
     @Override
@@ -46,8 +58,10 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) {
+        if (endReason.mayStartNext & queue.peek() != null) {
             nextTrack();
+        } else {
+            audioManager.closeAudioConnection();
         }
 
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext

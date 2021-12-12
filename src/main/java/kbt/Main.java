@@ -10,6 +10,7 @@ import javax.security.auth.login.LoginException;
 
 import com.typesafe.config.Config;
 
+import kbt.commands.Music;
 import kbt.commands.Status;
 import kbt.config.ConfigLoader;
 import net.dv8tion.jda.api.JDA;
@@ -25,6 +26,7 @@ public class Main {
     private static final ConfigLoader configLoader = new ConfigLoader();
 
     private static final Events events = new Events();
+    private static final Music music = new Music();
 
     public static Config config = configLoader.coreConfig;
 
@@ -55,6 +57,7 @@ public class Main {
             refreshConfig();
 
             events.registerCommand(new Status());
+            events.registerCommand(music);
             instance.addEventListener(events);
 
         } catch (LoginException | InterruptedException e) {

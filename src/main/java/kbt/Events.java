@@ -25,7 +25,7 @@ public class Events extends ListenerAdapter{
         
         if(!event.getMessage().getContentDisplay().startsWith(prefix)) return;
 
-        String messageContent = event.getMessage().getContentDisplay().substring(prefix.length()).trim().toLowerCase();
+        String messageContent = event.getMessage().getContentDisplay().substring(prefix.length()).trim();
         LinkedList<String> messageArgs = new LinkedList<String>(Arrays.asList(messageContent.split(" ")));
         String command = messageArgs.get(0);
         messageArgs.remove(0);
