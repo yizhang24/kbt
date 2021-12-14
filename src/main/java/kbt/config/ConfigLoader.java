@@ -15,7 +15,7 @@ public class ConfigLoader {
 
     public Config coreConfig;
 
-    private ConfigWriter configWriter = new ConfigWriter();
+    public ConfigWriter configWriter = new ConfigWriter();
 
     private Map<String, Object> guildInfo = new HashMap<String, Object>();
 
@@ -26,7 +26,7 @@ public class ConfigLoader {
     public void loadConfig() {
         File file = Constants.CORE_CONF_PATH.toFile();
 
-        if (ConfigFactory.parseFile(file).isEmpty() || ConfigFactory.parseFile(file).getString("discordtoken") == null) {
+        if (ConfigFactory.parseFile(file).isEmpty()) {
             configWriter.createConfig();
         }
         coreConfig = ConfigFactory.parseFile(file);

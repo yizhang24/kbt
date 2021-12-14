@@ -13,6 +13,7 @@ import com.typesafe.config.Config;
 import kbt.commands.Music;
 import kbt.commands.Status;
 import kbt.config.ConfigLoader;
+import kbt.config.ConfigWriter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -23,18 +24,30 @@ public class Main {
 
     public static JDA instance;
 
-    private static final ConfigLoader configLoader = new ConfigLoader();
+    public static final ConfigLoader configLoader = new ConfigLoader();
 
-    private static final Events events = new Events();
-    private static final Music music = new Music();
+    private static Events events;
+    private static Music music;
 
     public static Config config = configLoader.coreConfig;
 
     public static void main(String[] args) {
         try {
-            String token = config.getString("discordtoken");
-            JDABuilder jdaBuilder = JDABuilder.createDefault(token);
-            instance = jdaBuilder.build().awaitReady();
+            String token;
+            if (!config.hasPath("discordtoken")) {
+                configLoader.configWriter.writeDiscordToken();
+                configLoader.loadConfig();
+            }
+            token = config.getString("discordtoken");
+            try {
+                JDABuilder jdaBuilder = JDABuilder.createDefault(token);
+                instance = jdaBuilder.build().awaitReady();
+            } catch (LoginException e) {
+                configLoader.configWriter.writeDiscordToken();
+                configLoader.loadConfig();
+                JDABuilder jdaBuilder = JDABuilder.createDefault(token);
+                instance = jdaBuilder.build().awaitReady();
+            }
 
             if (config.hasPath("presence")) {
                 System.out.println("Stored presence found, setting.");
@@ -56,6 +69,8 @@ public class Main {
             configLoader.addGuilds(instance.getGuilds());
             refreshConfig();
 
+            events = new Events();
+            music = new Music();
             events.registerCommand(new Status());
             events.registerCommand(music);
             instance.addEventListener(events);

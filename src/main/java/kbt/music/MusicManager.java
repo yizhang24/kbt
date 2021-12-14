@@ -12,7 +12,9 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.Invite.Channel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
 public class MusicManager {
@@ -48,10 +50,10 @@ public class MusicManager {
         return localManager;
     }
     
-    public void loadTrack(Guild guild, String address, VoiceChannel channel) {
+    public void loadTrack(TextChannel textChannel, String address, VoiceChannel channel) {
 
-        GuildMusicManager localMusicManager = getGuildManager(guild);
-        AudioManager localAudioManager = guild.getAudioManager();
+        GuildMusicManager localMusicManager = getGuildManager(channel.getGuild());
+        AudioManager localAudioManager = channel.getGuild().getAudioManager();
 
         System.out.println(address);
 
@@ -65,6 +67,7 @@ public class MusicManager {
                     localAudioManager.openAudioConnection(channel);
                 }
                 localMusicManager.scheduler.queue(track);
+                textChannel.sendMessage("Added track: " + track.getInfo().title).queue();
             }
 
             @Override
@@ -81,7 +84,6 @@ public class MusicManager {
             @Override
             public void loadFailed(FriendlyException exception) {
                 exception.printStackTrace();
-
             }
 
         });
