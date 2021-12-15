@@ -28,11 +28,12 @@ public class TrackScheduler extends AudioEventAdapter {
     public void queue(AudioTrack track) {
         if (!player.startTrack(track, true)) {
             queue.offer(track);
+            System.out.println(queue.toString());
         }
     }
 
     public void nextTrack() {
-        player.startTrack(queue.poll(), false);
+        player.startTrack(queue.peek(), false);
     }
 
     public void stop() {
@@ -60,7 +61,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext & queue.peek() != null) {
             nextTrack();
-        } else {
+        } else if (endReason != AudioTrackEndReason.REPLACED) {
             audioManager.closeAudioConnection();
         }
 

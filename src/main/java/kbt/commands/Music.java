@@ -17,7 +17,7 @@ public class Music extends Command {
     private final YoutubeSearcher youtube;
 
     public Music () {
-        super("music", new ArrayList<String>(List.of("play", "stop")));
+        super("music", new ArrayList<String>(List.of("play", "stop", "skip")));
 
         musicManager = MusicManager.getInstance();
         youtube = new YoutubeSearcher();

@@ -58,8 +58,13 @@ public class ConfigWriter {
             e1.printStackTrace();
         }
 
-        Config config = ConfigFactory.parseMap(values).withFallback(Main.config);
-        writeConfig(config);
+        Config newConfig;
+        if(Main.config != null) {
+            newConfig = ConfigFactory.parseMap(values).withFallback(Main.config);
+        } else {
+            newConfig = ConfigFactory.parseMap(values);
+        }
+        writeConfig(newConfig);
     }
 
     public void writeYTToken() {
@@ -77,7 +82,12 @@ public class ConfigWriter {
             e1.printStackTrace();
         }
 
-        Config config = ConfigFactory.parseMap(values).withFallback(Main.config);
-        writeConfig(config);
+        Config newConfig;
+        if(Main.config != null) {
+            newConfig = ConfigFactory.parseMap(values).withFallback(Main.config);
+        } else {
+            newConfig = ConfigFactory.parseMap(values);
+        }
+        writeConfig(newConfig);
     }
 }

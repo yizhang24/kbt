@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.entities.Invite.Channel;
@@ -61,9 +62,7 @@ public class MusicManager {
 
             @Override
             public void trackLoaded(AudioTrack track) {
-                if (!localAudioManager.isConnected()
-                        || !localAudioManager.getConnectedChannel().getId().equals(channel.getId())) {
-                    localAudioManager.closeAudioConnection();
+                if (!localAudioManager.isConnected()) {
                     localAudioManager.openAudioConnection(channel);
                 }
                 localMusicManager.scheduler.queue(track);
@@ -78,7 +77,6 @@ public class MusicManager {
 
             @Override
             public void noMatches() {
-
             }
 
             @Override
