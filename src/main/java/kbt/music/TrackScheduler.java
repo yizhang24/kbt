@@ -26,9 +26,12 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void queue(AudioTrack track) {
-        if (!player.startTrack(track, true)) {
+        System.out.println("Queued!" + track.getDuration());
+        if (!player.startTrack(track, false)) {
             queue.offer(track);
-            System.out.println(queue.toString());
+            System.out.println("queue:" + queue.toString());
+        } else {
+            System.out.println(player.getPlayingTrack().getDuration());
         }
     }
 

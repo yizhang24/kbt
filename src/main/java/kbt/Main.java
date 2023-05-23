@@ -6,19 +6,17 @@ package kbt;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.security.auth.login.LoginException;
-
 import com.typesafe.config.Config;
 
 import kbt.commands.Music;
 import kbt.commands.Status;
 import kbt.config.ConfigLoader;
-import kbt.config.ConfigWriter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 public class Main {
 
@@ -39,15 +37,8 @@ public class Main {
                 configLoader.loadConfig();
             }
             token = config.getString("discordtoken");
-            try {
-                JDABuilder jdaBuilder = JDABuilder.createDefault(token);
+                JDABuilder jdaBuilder = JDABuilder.createDefault(token).enableIntents(GatewayIntent.MESSAGE_CONTENT);
                 instance = jdaBuilder.build().awaitReady();
-            } catch (LoginException e) {
-                configLoader.configWriter.writeDiscordToken();
-                configLoader.loadConfig();
-                JDABuilder jdaBuilder = JDABuilder.createDefault(token);
-                instance = jdaBuilder.build().awaitReady();
-            }
 
             if (config.hasPath("presence")) {
                 System.out.println("Stored presence found, setting.");
@@ -75,7 +66,7 @@ public class Main {
             events.registerCommand(music);
             instance.addEventListener(events);
 
-        } catch (LoginException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
