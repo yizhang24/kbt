@@ -32,7 +32,7 @@ dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 
-    implementation "net.dv8tion:JDA:4.3.0_277"
+    implementation "net.dv8tion:JDA:5.0.0-beta.9"
     implementation 'com.sedmelluq:lavaplayer:1.3.78'
 
     compile 'com.google.apis:google-api-services-youtube:v3-rev20210915-1.32.1'

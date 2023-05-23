@@ -14,7 +14,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
-import com.typesafe.config.ConfigException;
 
 import kbt.Main;
 
@@ -43,11 +42,11 @@ public class YoutubeSearcher {
                     .setType(List.of("video"))
                     .setMaxResults(1L)
                     .setFields("items(id/videoId,snippet)");
-            ArrayList res = (ArrayList) search.execute().get("items");
+            ArrayList<SearchResult> res = (ArrayList<SearchResult>) search.execute().get("items");
             if (res.size() == 0) {
                 return null;
             }
-            SearchResult video = (SearchResult) res.get(0);
+            SearchResult video = res.get(0);
             return video;
         } catch (GoogleJsonResponseException e) {
             System.err.println("YoutubeSearchHandler: There was a service error: " + e.getDetails().getCode() + " : "

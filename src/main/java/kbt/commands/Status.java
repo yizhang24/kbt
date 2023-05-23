@@ -7,6 +7,7 @@ import kbt.Constants;
 import kbt.Main;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Activity.ActivityType;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Status extends Command {
@@ -28,7 +29,7 @@ public class Status extends Command {
                     Main.setStatus(activity);
                     return;
                 }
-                ActivityType activityType = ActivityType.DEFAULT;
+                ActivityType activityType = ActivityType.PLAYING;
                 String activity = String.join(" ", args.subList(1, args.size()));
                 switch(args.get(0)){
                     case "listening":
@@ -47,7 +48,7 @@ public class Status extends Command {
                         activity = String.join(" ", args);
                 }
                 Main.setStatus(Activity.of(activityType, activity));
-                e.getMessage().addReaction(Constants.GREEN_CHECK).queue();
+                e.getMessage().addReaction(Emoji.fromUnicode(Constants.GREEN_CHECK)).queue();
         }
     }
     

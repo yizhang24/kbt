@@ -22,11 +22,7 @@ public class Events extends ListenerAdapter{
     public void onMessageReceived(MessageReceivedEvent event) {
 
         String prefix = Main.config.getString(event.getGuild().getId() + ".prefix");
-
-        if(event.getMessage().getContentDisplay().contains("fuck")) {
-            event.getMessage().reply("https://i.imgur.com/i3UnHnd.png").queue();
-        }
-
+        
         if(!event.getMessage().getContentDisplay().startsWith(prefix)) return;
 
         String messageContent = event.getMessage().getContentDisplay().substring(prefix.length()).trim();

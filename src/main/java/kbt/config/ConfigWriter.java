@@ -17,7 +17,6 @@ import kbt.Main;
 public class ConfigWriter {
 
     private Scanner scanner = new Scanner(System.in);
-    private Config config;
     
     public void createConfig(){
         System.out.println(Constants.GREEN + "Core Config file not found! Creating new config..." + Constants.RESET);
